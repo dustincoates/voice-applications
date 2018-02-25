@@ -21,6 +21,11 @@ const languageStrings = {
     }
   },
   fallback: {
+    LaunchRequest: "Welcome to Hello Science! Ask for a space fact or get" +
+                   " the distance between a planet and the Sun.",
+    LaunchRequestTitle: "Hello Science",
+    LaunchRequestContent: "From science facts to planet distances, get your" +
+    " fill of the <i>magical and wonderful</i> of science with Hello Science!",
     Unhandled: "I can't do that right now.",
     UnknownPlanet: "I'm afraid I don't have data for that planet."
   }
@@ -103,7 +108,31 @@ const planets = {
 
 const handlers = {
   LaunchRequest () {
-    this.emit("GetFactIntent");
+    const speech = this.t([
+      "LaunchRequest", languageStrings.fallback.LaunchRequest
+    ]);
+
+    if(this.event.context.System.device.supportedInterfaces.Display) {
+      const builder = new Alexa.templateBuilders.BodyTemplate1Builder();
+      const makeRichText = Alexa.utils.TextUtils.makeRichText;
+
+      const title = this.t([
+        "LaunchRequestTitle", languageStrings.fallback.LaunchRequestTitle
+      ]);
+      const content = this.t([
+        "LaunchRequestContent", languageStrings.fallback.LaunchRequestContent
+      ]);
+
+      const template = builder
+                        .setTitle(title)
+                        .setTextContent(makeRichText(content))
+                        .build();
+
+      this.response.renderTemplate(template);
+    }
+
+    this.response.speak(speech);
+    this.emit(":responseReady");
   },
   GetFactIntent () {
     this.response.speak(this.t("SpaceFact"));
