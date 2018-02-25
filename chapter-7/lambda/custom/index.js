@@ -22,7 +22,7 @@ const handlers = {
     this.emit(":responseReady");
   },
   Unhandled () {
-    this.response.speak(this.t("Unhandled"));
+    this.response.speak(this.t(["Unhandled", "I can't do that right now."]));
     this.emit(":responseReady");
   }
 };
