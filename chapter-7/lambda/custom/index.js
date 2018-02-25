@@ -10,6 +10,9 @@ const languageStrings = {
     translation: {
       SpaceFact: "The first Briton in space was Helen Sharman."
     }
+  },
+  fallback: {
+    Unhandled: "I can't do that right now."
   }
 };
 
@@ -22,7 +25,7 @@ const handlers = {
     this.emit(":responseReady");
   },
   Unhandled () {
-    this.response.speak(this.t(["Unhandled", "I can't do that right now."]));
+    this.response.speak(this.t(["Unhandled", languageStrings.fallback.Unhandled]));
     this.emit(":responseReady");
   }
 };
