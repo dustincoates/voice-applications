@@ -164,8 +164,19 @@ const handlers = {
 
     let speech;
 
-    if(values && planets[values[0].value.id.toLowerCase()]) {
-      const planet = planets[values[0].value.id.toLowerCase()];
+    if(
+      (values &&
+      planets[values[0].value.id.toLowerCase()]) ||
+      (this.event.request.token &&
+      planets[this.event.request.token.toLowerCase()])
+    ) {
+      if(values) {
+        value = values[0].value.id.toLowerCase();
+      } else {
+        value = this.event.request.token.toLowerCase();
+      }
+
+      const planet = planets[value];
 
       speech = this.t("PlanetDistance", planet);
 
@@ -217,6 +228,9 @@ const handlers = {
 
     this.response.speak(speech);
     this.emit(":responseReady");
+  },
+  ElementSelected () {
+    this.emitWithState("GetDistanceIntent");
   },
   Unhandled () {
     this.response.speak(this.t(["Unhandled", languageStrings.fallback.Unhandled]));
