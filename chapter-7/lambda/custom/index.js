@@ -27,7 +27,9 @@ const languageStrings = {
     LaunchRequestContent: "From science facts to planet distances, get your" +
     " fill of the <i>magical and wonderful</i> of science with Hello Science!",
     Unhandled: "I can't do that right now.",
-    UnknownPlanet: "I'm afraid I don't have data for that planet."
+    UnknownPlanet: "I'm afraid I don't have data for that planet.",
+    GetAllDistances: "The closest planet to the Sun is Mercury and the" +
+                     " farthest is Neptune."
   }
 };
 
@@ -172,6 +174,16 @@ const handlers = {
     } else {
       speech = this.t(["UnknownPlanet", languageStrings.fallback.UnknownPlanet]);
     }
+
+    this.response.speak(speech);
+    this.emit(":responseReady");
+  },
+  GetAllDistancesIntent () {
+    const speech = this.t([
+      "GetAllDistances", languageStrings.fallback.GetAllDistances
+    ]);
+
+    if(this.event.context.System.device.supportedInterfaces.Display) {}
 
     this.response.speak(speech);
     this.emit(":responseReady");

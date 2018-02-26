@@ -125,6 +125,14 @@
           ]
         },
         {
+          "name":"GetAllDistancesIntent",
+          "slots":[],
+          "samples":[
+            "show me all of the planets",
+            "the distance for all of the planets"
+          ]
+        },
+        {
           "name":"AMAZON.ScrollDownIntent"
         },
         {
