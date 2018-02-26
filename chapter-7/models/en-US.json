@@ -121,7 +121,11 @@
           "samples":[
             "how many miles is {Planet} from the sun",
             "what's the distance between {Planet} and the sun",
-            "how far between the sun and {Planet}"
+            "how far between the sun and {Planet}",
+            "show me the {Planet}",
+            "open {Planet}",
+            "select the {Planet} item",
+            "number {Planet}"
           ]
         },
         {
