@@ -8,7 +8,8 @@ const languageStrings = {
                       " or {{mi}} miles, from the Sun.",
       PlanetDistanceCardTitle: "Distance Between {{name}} and the Sun",
       PlanetDistanceCardContent: "At its closest, {{name}} is {{km}}" +
-                                 " kilometers, or {{mi}} miles, from the Sun."
+                                 " kilometers, or {{mi}} miles, from the Sun.",
+      IndividualPlanet: "{{mi}} mi."
     }
   },
   "en-GB": {
@@ -17,7 +18,8 @@ const languageStrings = {
       PlanetDistance: "The planet {{name}} is {{km}} kilometres from the Sun.",
       PlanetDistanceCardTitle: "Distance Between {{name}} and the Sun",
       PlanetDistanceCardContent: "At its closest, {{name}} is {{km}}" +
-                                 " kilometres from the Sun."
+                                 " kilometres from the Sun.",
+      IndividualPlanet: "{{km}} km."
     }
   },
   fallback: {
@@ -29,7 +31,8 @@ const languageStrings = {
     Unhandled: "I can't do that right now.",
     UnknownPlanet: "I'm afraid I don't have data for that planet.",
     GetAllDistances: "The closest planet to the Sun is Mercury and the" +
-                     " farthest is Neptune."
+                     " farthest is Neptune.",
+    GetAllDistancesTitle: "Planets in the Solar System"
   }
 };
 
@@ -183,7 +186,34 @@ const handlers = {
       "GetAllDistances", languageStrings.fallback.GetAllDistances
     ]);
 
-    if(this.event.context.System.device.supportedInterfaces.Display) {}
+    if(this.event.context.System.device.supportedInterfaces.Display) {
+      const listBuilder = new Alexa.templateBuilders.ListTemplate1Builder();
+      const listItemBuilder = new Alexa.templateBuilders.ListItemBuilder();
+      const makePlainText = Alexa.utils.TextUtils.makePlainText;
+
+      const title = this.t(
+        ["GetAllDistancesTitle", languageStrings.fallback.GetAllDistancesTitle]
+      );
+
+      for(let planet in planets) {
+        const primaryText = makePlainText(planets[planet].name);
+        const tertiaryText = makePlainText(
+          this.t("IndividualPlanet", planets[planet])
+        );
+        listItemBuilder.addItem(
+          undefined, planet, primaryText, undefined, tertiaryText
+        );
+      }
+
+      const listItems = listItemBuilder.build();
+
+      const listTemplate = listBuilder
+        										.setTitle(title)
+        										.setListItems(listItems)
+        										.build();
+
+      this.response.renderTemplate(listTemplate);
+    }
 
     this.response.speak(speech);
     this.emit(":responseReady");
