@@ -1,0 +1,45 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "summary": "Science Facts",
+          "examplePhrases": [
+            "Alexa open hello science",
+            "Alexa tell hello science to give me a science fact",
+            "Alexa ask hello science to wow me with science"
+          ],
+          "name": "hello science",
+          "description": "Science facts for daily life."
+        },
+        "en-GB": {
+          "summary": "Science Facts",
+          "examplePhrases": [
+            "Alexa open hello science",
+            "Alexa tell hello science to give me a science fact",
+            "Alexa ask hello science to wow me with science"
+          ],
+          "name": "hello science",
+          "description": "Science facts for daily life."
+        }
+      },
+      "isAvailableWorldwide": true,
+      "testingInstructions": "Sample Testing Instructions.",
+      "category": "EDUCATION_AND_REFERENCE",
+      "distributionCountries": []
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "sourceDir": "lambda/custom"
+        },
+        "interfaces": [
+          {
+            "type": "RENDER_TEMPLATE"
+          }
+        ]
+      }
+    },
+    "manifestVersion": "1.0"
+  }
+}
