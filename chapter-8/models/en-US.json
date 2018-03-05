@@ -1,47 +1,257 @@
 {
-    "interactionModel":{
-        "languageModel":{
-            "invocationName":"hello world",
-            "types":[],
-            "intents":[
-                {
-                  "name": "AMAZON.CancelIntent",
-                  "samples": []
-                },
-                {
-                  "name": "AMAZON.HelpIntent",
-                  "samples": []
-                },
-                {
-                  "name": "AMAZON.StopIntent",
-                  "samples": []
-                },
-                {
-                    "name":"HelloWorldIntent",
-                    "slots":[
-
-                    ],
-                    "samples":[
-                        "hello",
-                        "say hello",
-                        "say hello world"
-                    ]
-                },
-                {
-                    "name":"MyNameIsIntent",
-                    "slots":[
-                        {
-                            "name":"name",
-                            "type":"AMAZON.US_FIRST_NAME"
-                        }
-                    ],
-                    "samples":[
-                        "my name is {name}",
-                        "i am {name}",
-                        "you can call me {name}"
-                    ]
-                }
-            ]
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "movie go",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "BuyTicketsIntent",
+          "slots": [
+            {
+              "name": "MovieName",
+              "type": "AMAZON.Movie",
+              "samples": [
+                "{NumberTickets} for {MovieName} at {MovieTime}",
+                "{NumberTickets} tickets to {MovieName}",
+                "I'm going to watch {MovieName}",
+                "I'll see {MovieName}",
+                "I want to see {MovieName}",
+                "{MovieName}"
+              ]
+            },
+            {
+              "name": "NumberTickets",
+              "type": "AMAZON.NUMBER",
+              "samples": [
+                "{NumberTickets} for {MovieTime}",
+                "{NumberTickets} tickets for the {MovieTime} showing",
+                "I want {NumberTickets} tickets",
+                "{NumberTickets} tickets",
+                "I want {NumberTickets}",
+                "{NumberTickets}"
+              ]
+            },
+            {
+              "name": "MovieTime",
+              "type": "AMAZON.TIME",
+              "samples": [
+                "the showing at {MovieTime}",
+                "the {MovieTime} showing",
+                "{MovieTime}"
+              ]
+            },
+            {
+              "name": "MovieTheater",
+              "type": "AMAZON.MovieTheater",
+              "samples": [
+                "I'll be going to {MovieTheater}",
+                "I'm seeing it at {MovieTheater}",
+                "{MovieTheater}"
+              ]
+            },
+            {
+              "name": "Discounts",
+              "type": "Discounts"
+            }
+          ],
+          "samples": [
+            "{MovieName} for {NumberTickets}",
+            "Buy tickets for {MovieName} for a {Discounts}",
+            "Buy tickets for {MovieName} with a {Discounts} discount",
+            "Buy tickets for {MovieName}",
+            "{MovieName} at {MovieTheater} theater at {MovieTime}",
+            "{MovieName} at {MovieTime}",
+            "{NumberTickets} for {MovieName} at {MovieTime}",
+            "I want to buy {NumberTickets} for the {MovieTime} showing of {MovieName}"
+          ]
         }
-    }
+      ],
+      "types": [
+        {
+          "values": [
+            {
+              "id": "member",
+              "name": {
+                "value": "member",
+                "synonyms": [
+                  "club member",
+                  "film club",
+                  "movie club",
+                  "film club member",
+                  "movie club member",
+                  "club subscriber"
+                ]
+              }
+            },
+            {
+              "id": "student",
+              "name": {
+                "value": "student",
+                "synonyms": [
+                  "college student",
+                  "high school student"
+                ]
+              }
+            },
+            {
+              "id": "senior",
+              "name": {
+                "value": "senior",
+                "synonyms": [
+                  "senior citizen",
+                  "retiree",
+                  "retired",
+                  "over 60"
+                ]
+              }
+            }
+          ],
+          "name": "Discounts"
+        }
+      ]
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "BuyTicketsIntent",
+          "confirmationRequired": false,
+          "slots": [
+            {
+              "name": "MovieName",
+              "type": "AMAZON.Movie",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.990969092612.1272189371480"
+              }
+            },
+            {
+              "name": "NumberTickets",
+              "type": "AMAZON.NUMBER",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.471019581438.1098731257746"
+              }
+            },
+            {
+              "name": "MovieTime",
+              "type": "AMAZON.TIME",
+              "elicitationRequired": true,
+              "confirmationRequired": true,
+              "prompts": {
+                "confirmation": "Confirm.Slot.471019581438.1110041236435",
+                "elicitation": "Elicit.Slot.471019581438.1110041236435"
+              }
+            },
+            {
+              "name": "MovieTheater",
+              "type": "AMAZON.MovieTheater",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.471019581438.1170663732699"
+              }
+            },
+            {
+              "name": "Discounts",
+              "type": "Discounts",
+              "elicitationRequired": false,
+              "confirmationRequired": false
+            }
+          ]
+        }
+      ]
+    },
+    "prompts": [
+      {
+        "id": "Elicit.Slot.990969092612.1272189371480",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "What movie do you have your eye on?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Okay, which movie will you be watching?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Great, what movie do you want to see?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.471019581438.1098731257746",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "{MovieName}, got it. How many tickets are you getting?"
+          },
+          {
+            "type": "PlainText",
+            "value": "How many tickets?"
+          },
+          {
+            "type": "PlainText",
+            "value": "I've heard really good things about {MovieName}. How many tickets will you want?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.471019581438.1170663732699",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Which theater are you buying tickets for?"
+          },
+          {
+            "type": "PlainText",
+            "value": "{NumberTickets} for {MovieName}. Which theater?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.471019581438.1110041236435",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "And what time?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Which showing for {MovieName}?"
+          },
+          {
+            "type": "PlainText",
+            "value": "When do you want to see {MovieName}?"
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Slot.471019581438.1110041236435",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Did I hear you right, that was {MovieTime}?"
+          },
+          {
+            "type": "PlainText",
+            "value": "I got {MovieTime}, is that right?"
+          }
+        ]
+      }
+    ]
+  }
 }
