@@ -14,13 +14,53 @@ const languageStrings = {
   }
 };
 
+function friendlyTime (timeStr) {
+  let [hours, minutes] = timeStr.split(":");
+  let meridien;
+  let friendlyStr;
+
+  hours = parseInt(hours);
+
+  if (hours > 12) {
+    hours = hours - 12;
+    meridien = 'p.m.';
+  } else {
+    meridien = 'a.m.';
+  }
+
+  if (hours === 0) {
+    hours = 12;
+  }
+
+  if (minutes === "15") {
+    friendlyStr = `a quarter after ${hours} ${meridien}`;
+  } else if (minutes === "00") {
+    friendlyStr = `${hours} ${meridien}`;
+  } else {
+    friendlyStr = `${hours} ${minutes} ${meridien}`;
+  }
+
+  return friendlyStr;
+}
+
 const handlers = {
   LaunchRequest () {
     this.emit("BuyTicketsIntent");
   },
   BuyTicketsIntent () {
     if(this.event.request.dialogState !== "COMPLETED"){
-      this.emit(":delegate");
+      const intent = this.event.request.intent;
+      if(
+        intent.slots.MovieTime.value &&
+        intent.slots.MovieTime.confirmationStatus !== "CONFIRMED"
+      ) {
+        let movieTime = intent.slots.MovieTime.value;
+        movieTime = friendlyTime(intent.slots.MovieTime.value);
+
+        intent.slots.MovieTime.value = movieTime;
+      }
+
+      this.emit(":delegate", intent);
     } else {
       const movie = {
         NumberTickets: parseFloat(this.event.request.intent.slots.NumberTickets.value),
