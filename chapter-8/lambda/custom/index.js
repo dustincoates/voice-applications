@@ -5,7 +5,9 @@ const languageStrings = {
   "en-US": {
     translation: {
       BuyTickets: "Alright, {{NumberTickets}} tickets for {{MovieName}}" +
-                  " coming up! That'll be ${{Price}} in all."
+                  " coming up! That'll be ${{Price}} in all.",
+      BuyTicketsDenied: "I'm sorry. What do you want to do instead?",
+      BuyTicketsDeniedPrompt: "Please tell me again which movie you want."
     }
   },
   fallback: {
@@ -73,8 +75,15 @@ const handlers = {
         movie.Price = movie.Price / 2;
       }
 
-      const speak = this.t("BuyTickets", movie);
-      this.response.speak(speak);
+      if(this.event.request.intent.confirmationStatus === "CONFIRMED") {
+        const speak = this.t("BuyTickets", movie);
+        this.response.speak(speak);
+      } else {
+        const speak = this.t("BuyTicketsDenied");
+        const listen = this.t("BuyTicketsDeniedPrompt");
+        this.response.speak(speak).listen(listen);
+      }
+
       this.emit(":responseReady");
     }
   },
