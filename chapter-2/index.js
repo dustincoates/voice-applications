@@ -15,20 +15,37 @@ const WellRestedIntentHandler = {
                       .slots;
 
     let numOfHours = slots.NumberOfHours.value;
-
     numOfHours = parseInt(numOfHours);
+
+    const quality = slots.SleepQuality.value;
+
+    const good = ["good", "well", "wonderfully", "a lot", "amazing",
+                  "fantastic", "great", "not bad"];
+    const bad = ["bad", "poorly", "little", "very little", "not at all"];
 
     if (Number.isInteger(numOfHours)) {
       let speech;
 
+      if(good.includes(quality)) {
+        numOfHours += 1;
+        speech = "You slept well last night, and "
+      }
+
+      if(bad.includes(quality)) {
+        numOfHours -= 1;
+        speech = "You slept poorly last night, and "
+      }
+
       if(numOfHours > 12) {
-        speech = "I think you may sleep too much and swing back to tired.";
+        speech += "I think you may sleep too much and swing back to "
+                  + "tired tomorrow.";
       } else if(numOfHours > 8) {
-        speech = "You should wake up refreshed.";
+        speech += "tomorrow you should wake up refreshed.";
       } else if(numOfHours > 6) {
-        speech = "You may get by, but watch out for a mid-day crash.";
+        speech += "in the morning you may get by, but watch out for a "
+                  + "mid-day crash.";
       } else {
-        speech = "You'll be dragging. Get the coffee ready!";
+        speech += "tomorrow you'll be dragging. Get the coffee ready!";
       }
 
       return handlerInput
