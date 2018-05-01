@@ -14,21 +14,38 @@ const WellRestedIntentHandler = {
                       .intent
                       .slots;
 
-    let numOfHours = slots.NumberOfHours.value;
+    const numOfHours = slots.NumberOfHours.value;
+    let adjustedHours = parseInt(numOfHours);
 
-    numOfHours = parseInt(numOfHours);
+    const quality = slots.SleepQuality.value;
 
-    if (Number.isInteger(numOfHours)) {
-      let speech;
+    const good = ["good", "well", "wonderfully", "a lot", "amazing",
+                  "fantastic", "great", "not bad"];
+    const bad = ["bad", "poorly", "little", "very little", "not at all"];
 
-      if(numOfHours > 12) {
-        speech = "I think you may sleep too much and swing back to tired.";
-      } else if(numOfHours > 8) {
-        speech = "You should wake up refreshed.";
-      } else if(numOfHours > 6) {
-        speech = "You may get by, but watch out for a mid-day crash.";
+    if (Number.isInteger(adjustedHours)) {
+      let speech = "";
+
+      if(good.includes(quality)) {
+        adjustedHours += 1;
+        speech = "You slept well last night, and "
+      }
+
+      if(bad.includes(quality)) {
+        adjustedHours -= 1;
+        speech = "You slept poorly last night, and "
+      }
+
+      if(adjustedHours > 12) {
+        speech += "I think you may sleep too much and swing back to "
+                  + "tired tomorrow.";
+      } else if(adjustedHours > 8) {
+        speech += "tomorrow you should wake up refreshed.";
+      } else if(adjustedHours > 6) {
+        speech += "in the morning you may get by, but watch out for a "
+                  + "mid-day crash.";
       } else {
-        speech = "You'll be dragging. Get the coffee ready!";
+        speech += "tomorrow you'll be dragging. Get the coffee ready!";
       }
 
       return handlerInput
