@@ -1,0 +1,25 @@
+{
+  "name": "voice-applications",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dustincoates/voice-applications.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dustincoates/voice-applications/issues"
+  },
+  "homepage": "https://github.com/dustincoates/voice-applications#readme",
+  "devDependencies": {
+    "eslint": "^4.19.1"
+  }
+}
