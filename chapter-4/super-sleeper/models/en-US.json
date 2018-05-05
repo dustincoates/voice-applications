@@ -13,6 +13,10 @@
         },
         {
           "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "WellRestedIntent",
           "slots": [
             {
               "name": "NumberOfHours",
@@ -67,7 +71,7 @@
       ],
       "types": [
         {
-          "name": "QUALITIES",
+          "name": "Quality",
           "values": [
             {
               "id": "good",
