@@ -3,18 +3,18 @@
     "publishingInformation": {
       "locales": {
         "en-US": {
-          "summary": "Sample Short Description",
+          "summary": "Super Sleeper",
           "examplePhrases": [
-            "Alexa open hello world",
-            "Alexa tell hello world hello",
-            "Alexa ask hello world say hello"
+            "Alexa open super sleeper",
+            "Alexa tell super sleeper four hours of sleep",
+            "Alexa ask super sleeper how tired will I be if I sleep for eight hours"
           ],
           "name": "super-sleeper",
-          "description": "Sample Full Description"
+          "description": "Example skill for Voice Applications"
         }
       },
       "isAvailableWorldwide": true,
-      "testingInstructions": "Sample Testing Instructions.",
+      "testingInstructions": "None.",
       "category": "EDUCATION_AND_REFERENCE",
       "distributionCountries": []
     },
