@@ -129,12 +129,29 @@ const StopOrCancelIntentHandler = {
   }
 };
 
+const LaunchRequestHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === "LaunchRequest";
+  },
+  handle(handlerInput) {
+    const speech = "Welcome to the Super Sleeper skill. You can ask for " +
+                   "how well rested you'll be or tell me how you slept.";
+    const reprompt = "Try saying 'I slept well last night.'";
+
+    return handlerInput.responseBuilder
+      .speak(speech)
+      .reprompt(reprompt)
+      .getResponse();
+  }
+};
+
 const skillId = "<YOUR SKILL ID>";
 exports.handler = Alexa.SkillBuilders.custom()
   .addRequestHandlers(
     WellRestedIntentHandler,
     HelpIntentHandler,
-    StopOrCancelIntentHandler
+    StopOrCancelIntentHandler,
+    LaunchRequestHandler
   )
   .withSkillId(skillId)
   .lambda();
