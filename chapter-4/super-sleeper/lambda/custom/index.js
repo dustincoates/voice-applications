@@ -32,10 +32,8 @@ const WellRestedIntentHandler = {
   canHandle(handlerInput) {
     const intentName = "WellRestedIntent";
 
-    return (
-      handlerInput.requestEnvelope.request.type === "IntentRequest" &&
-      handlerInput.requestEnvelope.request.intent.name === intentName
-    );
+    return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+      handlerInput.requestEnvelope.request.intent.name === intentName;
   },
   handle(handlerInput) {
     const slots = handlerInput.requestEnvelope.request.intent.slots;
@@ -92,8 +90,51 @@ const WellRestedIntentHandler = {
   }
 };
 
+const HelpIntentHandler = {
+  canHandle(handlerInput) {
+    const intentName = "AMAZON.HelpIntent";
+
+    return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+      handlerInput.requestEnvelope.request.intent.name === intentName;
+  },
+  handle(handlerInput) {
+    const speech = "You can ask Super Sleeper how well rested you'll be or " +
+                    "share how well you slept the night before. Try saying " +
+                    "'How tired will I be if sleeping 8 hours.'";
+    const reprompt = "You can also say something like, '5 hours of sleep " +
+                     "and slept well last night'";
+
+    return handlerInput.responseBuilder
+      .speak(speech)
+      .reprompt(reprompt)
+      .getResponse();
+  }
+};
+
+const StopOrCancelIntentHandler = {
+  canHandle(handlerInput) {
+    const stopIntentName = "AMAZON.StopIntent";
+    const cancelIntentName = "AMAZON.CancelIntent";
+
+    return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+      (handlerInput.requestEnvelope.request.intent.name === stopIntentName ||
+      handlerInput.requestEnvelope.request.intent.name === cancelIntentName);
+  },
+  handle(handlerInput) {
+    const speech = "Alright, see you around and sleep well.";
+
+    return handlerInput.responseBuilder
+      .speak(speech)
+      .getResponse();
+  }
+};
+
 const skillId = "<YOUR SKILL ID>";
 exports.handler = Alexa.SkillBuilders.custom()
-  .addRequestHandlers(WellRestedIntentHandler)
+  .addRequestHandlers(
+    WellRestedIntentHandler,
+    HelpIntentHandler,
+    StopOrCancelIntentHandler
+  )
   .withSkillId(skillId)
   .lambda();
