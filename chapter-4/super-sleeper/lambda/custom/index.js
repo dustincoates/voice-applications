@@ -92,6 +92,8 @@ const WellRestedIntentHandler = {
   }
 };
 
+const skillId = "<YOUR SKILL ID>";
 exports.handler = Alexa.SkillBuilders.custom()
   .addRequestHandlers(WellRestedIntentHandler)
+  .withSkillId(skillId)
   .lambda();
