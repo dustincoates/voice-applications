@@ -89,6 +89,9 @@ const WellRestedIntentHandler = {
         speech += pluck(WellRestedPhrases.tooLittle);
       }
 
+      delete attributes.state;
+      handlerInput.attributesManager.setSessionAttributes(attributes);
+
       return handlerInput.responseBuilder.speak(speech).getResponse();
     } else {
       console.log("Slot values ", slots);
