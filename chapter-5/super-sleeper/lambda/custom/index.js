@@ -1,4 +1,5 @@
 const Alexa = require("ask-sdk");
+const AWS = require("aws-sdk");
 
 const states = {
   TOO_MUCH_CONFIRMATION: "TOO_MUCH_CONFIRMATION"
@@ -39,8 +40,21 @@ const WellRestedIntentHandler = {
     return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
       handlerInput.requestEnvelope.request.intent.name === intentName;
   },
-  handle(handlerInput) {
+  async handle(handlerInput) {
     const slots = handlerInput.requestEnvelope.request.intent.slots;
+    const data = await handlerInput
+                        .attributesManager
+                        .getPersistentAttributes();
+    
+    if (data.wellRested) {
+      data.wellRested.invocations = data.wellRested.invocations + 1;
+    } else {
+      data.wellRested = {
+        invocations: 1,
+        qualityUses: 0,
+        seenHint: false
+      };
+    }
 
     const numOfHours = slots.NumberOfHours.value;
     let adjustedHours = parseInt(numOfHours);
@@ -61,12 +75,31 @@ const WellRestedIntentHandler = {
           adjustedHours += 1;
           speech = "You slept well last night, and ";
         }
-
+        
         if (quality === "bad") {
           adjustedHours -= 1;
           speech = "You slept poorly last night, and ";
         }
+
+        data.wellRested.qualityUses = data.wellRested.qualityUses + 1;
       }
+
+      let endSpeech = "";
+      const regularUserCount = 5;
+      if (
+        data.wellRested.invocations > regularUserCount && 
+        data.wellRested.qualityUses === 0 &&
+        !data.wellRested.seenHint
+      ) {
+        endSpeech = " By the way, you can also tell me how " +
+                    "you slept last night. I'll take it into account " +
+                    "with your upcoming sleep.";
+
+        data.wellRested.seenHint = true; 
+      }
+
+      handlerInput.attributesManager.setPersistentAttributes(data);
+      await handlerInput.attributesManager.savePersistentAttributes(data);
 
       if (adjustedHours > 12) {
         attributes.state = states.TOO_MUCH_CONFIRMATION;
@@ -82,11 +115,11 @@ const WellRestedIntentHandler = {
                 .reprompt(reprompt)
                 .getResponse();
       } else if (adjustedHours > 8) {
-        speech += pluck(WellRestedPhrases.justRight);
+        speech += pluck(WellRestedPhrases.justRight) + endSpeech;
       } else if (adjustedHours > 6) {
-        speech += pluck(WellRestedPhrases.justUnder);
+        speech += pluck(WellRestedPhrases.justUnder) + endSpeech;
       } else {
-        speech += pluck(WellRestedPhrases.tooLittle);
+        speech += pluck(WellRestedPhrases.tooLittle) + endSpeech;
       }
 
       delete attributes.state;
@@ -189,7 +222,6 @@ const TooMuchYesIntentHandler = {
 const TooMuchNoIntentHandler = {
   canHandle(handlerInput) {
     const intentName = "AMAZON.NoIntent";
-    const attributes = handlerInput.attributesManager.getSessionAttributes();
 
     return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
       handlerInput.requestEnvelope.request.intent.name === intentName &&
@@ -239,4 +271,9 @@ exports.handler = Alexa.SkillBuilders.standard()
     Unhandled
   )
   .withSkillId(skillId)
+  .withTableName("super_sleeper")
+  .withAutoCreateTable(true)
+  .withDynamoDbClient(
+    new AWS.DynamoDB({ apiVersion: "latest", region: "us-east-1" })
+  )
   .lambda();
