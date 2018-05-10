@@ -1,0 +1,68 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "name info",
+      "types": [
+
+      ],
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": [
+
+          ]
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": [
+
+          ]
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": [
+
+          ]
+        },
+        {
+          "name":"GetNameIntent",
+          "slots":[
+            {
+              "name":"name",
+              "type":"AMAZON.US_FIRST_NAME"
+            }
+          ],
+          "samples":[
+            "{name}",
+            "the name is {name}",
+            "{name} is the name",
+            "facts about the name {name}",
+            "facts about {name}"
+          ]
+        },
+        {
+          "name":"SpellingIntent",
+          "slots":[
+            {
+              "name":"name",
+              "type":"AMAZON.US_FIRST_NAME"
+            }
+          ],
+          "samples":[
+            "what is the spelling of {name}",
+            "what the spelling of {name} is",
+            "{name} spelling",
+            "how to spell {name}",
+            "what is the spelling of it",
+            "what is the spelling",
+            "what the spelling is",
+            "how do you spell it",
+            "how it is spelled",
+            "spelled out",
+            "spelling"
+          ]
+        }
+      ]
+    }
+  }
+}
