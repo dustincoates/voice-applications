@@ -8,12 +8,13 @@
           "apis": {
             "custom": {
               "endpoint": {
-                "uri": "ask-custom-chapter-7-default"
+                "uri": "ask-custom-name-info-default"
               }
             }
           }
         }
-      }
+      },
+      "in_skill_products": []
     }
   }
 }
