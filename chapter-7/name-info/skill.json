@@ -11,6 +11,16 @@
           ],
           "name": "Name Info",
           "description": "Get information on first names"
+        },
+        "en-GB": {
+          "summary": "First name information",
+          "examplePhrases": [
+            "Alexa open name info",
+            "Alexa ask name info facts about the name Dustin ",
+            "Alexa ask name info facts about Amanda"
+          ],
+          "name": "Name Info",
+          "description": "Get information on first names"
         }
       },
       "isAvailableWorldwide": true,

@@ -145,7 +145,7 @@ const SavePersistenceInterceptor = {
       throw Error(error);
     }
   }
-}
+};
 
 const skillId = "<YOUR SKILL ID>";
 exports.handler = Alexa.SkillBuilders.standard()
