@@ -20,7 +20,6 @@ const GetNameIntentHandler = {
 
     if(name) {
       handlerInput.attributesManager.setPersistentAttributes(data);
-      await handlerInput.attributesManager.savePersistentAttributes(data);
 
       const speech = name + " sure is a nice name. " +
                      "What do you want to know about it?";
@@ -57,7 +56,6 @@ const SpellingIntentHandler = {
 
     if(data.name) {
       handlerInput.attributesManager.setPersistentAttributes(data);
-      await handlerInput.attributesManager.savePersistentAttributes(data);
       
       const speech = `You spell ${data.name}, ` +
                      `<say-as interpret-as="characters">${data.name}</say-as>.`;
@@ -139,6 +137,16 @@ const Unhandled = {
   },
 };
 
+const SavePersistenceInterceptor = {
+  async process(handlerInput, response) {
+    try {
+      await handlerInput.attributesManager.savePersistentAttributes();
+    } catch (error) {
+      throw Error(error);
+    }
+  }
+}
+
 const skillId = "<YOUR SKILL ID>";
 exports.handler = Alexa.SkillBuilders.standard()
   .addRequestHandlers(
@@ -149,6 +157,7 @@ exports.handler = Alexa.SkillBuilders.standard()
     LaunchRequestHandler,
     Unhandled
   )
+  .addResponseInterceptors(SavePersistenceInterceptor)
   .withSkillId(skillId)
   .withTableName("name_info")
   .withAutoCreateTable(true)
