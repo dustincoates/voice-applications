@@ -1,5 +1,40 @@
 const Alexa = require("ask-sdk");
 const AWS = require("aws-sdk");
+const MessageFormat = require("messageformat");
+const Messages = require("messageformat/messages");
+
+const languageStrings = {
+  "en-US": {
+    LaunchRequestReprompt: "Try saying, 'give me facts about the name Dustin.'"
+  },
+  "en-GB": {
+    LaunchRequestReprompt: "Try saying, 'give me facts about the name Aida.'"
+  },
+  "en": {
+    LaunchRequestSpeech: "Name info needs you to just ask for a first name.",
+    HelpIntentSpeech: "Ask me for a first name to get some facts about it.",
+    HelpIntentReprompt: "Also say something like, 'What is the first letter of Joanna?'",
+    StopOrCancelIntentSpeech: "Catch you on the flip side.",
+    UnhandledSpeech: "Oh, I think I misunderstood. Can you try once more?",
+    UnhandledReprompt: "How about this. Tell me a first name."
+  }
+};
+
+const LocalizationInterceptor = {
+  process(handlerInput) {
+    const fallbackLocale = "en";
+    const locale = handlerInput.requestEnvelope.request.locale;
+
+    const messageFormat = new MessageFormat(Object.keys(languageStrings));
+    const compiledStrings = messageFormat.compile(languageStrings);
+    const messages = new Messages(compiledStrings, locale);
+
+    messages.setFallback(locale, [fallbackLocale]);
+
+    const attributes = handlerInput.attributesManager.getRequestAttributes();
+    attributes.responses = messages;
+  }
+};
 
 const GetNameIntentHandler = {
   canHandle(handlerInput) {
@@ -77,10 +112,8 @@ const HelpIntentHandler = {
       handlerInput.requestEnvelope.request.intent.name === intentName;
   },
   handle(handlerInput) {
-    const speech =
-      "Ask me for a first name to get some facts about it.";
-    const reprompt =
-      "Also say something like, 'What is the first letter of Joanna?'";
+    const speech = responses.get("HelpIntentSpeech");
+    const reprompt = responses.get("HelpIntentReprompt");
 
     return handlerInput.responseBuilder
       .speak(speech)
@@ -99,7 +132,7 @@ const StopOrCancelIntentHandler = {
         handlerInput.requestEnvelope.request.intent.name === cancelIntentName);
   },
   handle(handlerInput) {
-    const speech = "Catch you on the flip side.";
+    const speech = responses.get("StopOrCancelIntentSpeech");
 
     return handlerInput.responseBuilder.speak(speech).getResponse();
   }
@@ -110,9 +143,13 @@ const LaunchRequestHandler = {
     return handlerInput.requestEnvelope.request.type === "LaunchRequest";
   },
   handle(handlerInput) {
-    const speech =
-      "The name info skill needs you to just ask for a first name.";
-    const reprompt = "Try saying, 'give me facts about the name Dustin.'";
+    const requestAttributes = handlerInput
+                            .attributesManager
+                            .getRequestAttributes();                     
+    const { responses } = requestAttributes;
+
+    const speech = responses.get("LaunchRequestSpeech");
+    const reprompt = responses.get("LaunchRequestReprompt");
 
     return handlerInput.responseBuilder
       .speak(speech)
@@ -126,9 +163,8 @@ const Unhandled = {
     return true;
   },
   handle(handlerInput) {
-    const speech = "Oh, I think I misunderstand. " +
-                   "Can you try once more?";
-    const reprompt = "How about this. Tell me a first name.";
+    const speech = responses.get("UnhandledSpeech");
+    const reprompt = responses.get("UnhandledReprompt");
 
     return handlerInput.responseBuilder
       .speak(speech)
@@ -157,6 +193,7 @@ exports.handler = Alexa.SkillBuilders.standard()
     LaunchRequestHandler,
     Unhandled
   )
+  .addRequestInterceptors(LocalizationInterceptor)
   .addResponseInterceptors(SavePersistenceInterceptor)
   .withSkillId(skillId)
   .withTableName("name_info")
