@@ -1,0 +1,47 @@
+{
+  "actions": [
+    {
+      "name": "MAIN",
+      "description": "Welcome Intent",
+      "fulfillment": {
+        "conversationName": "exhibitEngineApp"
+      },
+      "intent": {
+        "name": "actions.intent.MAIN"
+      }
+    },
+    {
+      "name": "HELP",
+      "description": "Help Intent",
+      "fulfillment": {
+        "conversationName": "exhibitEngineApp"
+      },
+      "intent": {
+        "name": "exhibitEngine.HELP",
+        "trigger": {
+          "queryPatterns": [
+            "help",
+            "assistance",
+            "guidance",
+            "tell me what I can do",
+            "what can I do here",
+            "i want help",
+            "i want assistance",
+            "i want guidance",
+            "i need help",
+            "i need assistance",
+            "i need guidance"
+          ]
+        }
+      }
+    }
+  ],
+  "conversations": {
+    "exhibitEngineApp": {
+      "name": "exhibitEngineApp",
+      "url": "<YOUR FULFILLMENT URL>",
+      "fulfillmentApiVersion": 2
+    }
+  },
+  "locale": "en"
+}
