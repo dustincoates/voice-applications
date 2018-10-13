@@ -1,0 +1,23 @@
+{
+  "name": "voice-applications",
+  "version": "1.0.0",
+  "description": "The code companion to Voice Applications for Alexa and Google Assistant by Manning Publications.",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint",
+    "lint:fix": "eslint --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dustincoates/voice-applications.git"
+  },
+  "keywords": [],
+  "author": "Dustin A Coates",
+  "bugs": {
+    "url": "https://github.com/dustincoates/voice-applications/issues"
+  },
+  "homepage": "https://github.com/dustincoates/voice-applications#readme",
+  "devDependencies": {
+    "eslint": "^4.19.1"
+  }
+}
