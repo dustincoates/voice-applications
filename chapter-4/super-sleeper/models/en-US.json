@@ -1,38 +1,44 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "greeter",
-      "types": [
-
-      ],
+      "invocationName": "super sleeper",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
-          "samples": [
-
-          ]
+          "samples": []
         },
         {
           "name": "AMAZON.HelpIntent",
-          "samples": [
-
-          ]
+          "samples": []
         },
         {
           "name": "AMAZON.StopIntent",
-          "samples": [
-
-          ]
+          "samples": []
         },
         {
-          "name": "HelloWorldIntent",
+          "name": "WellRestedIntent",
           "slots": [
-
+            {
+              "name": "NumberOfHours",
+              "type": "AMAZON.NUMBER"
+            }
           ],
           "samples": [
-            "hello",
-            "say hello",
-            "say hello world"
+            "How rested will I be",
+            "How rested will I be if I get {NumberOfHours} hours of sleep",
+            "How rested will I be if I get {NumberOfHours} hours of rest",
+            "How rested will I be if I sleep for {NumberOfHours} hours",
+            "How rested will I be if I rest for {NumberOfHours} hours",
+            "How well rested will I be after {NumberOfHours} hours",
+            "How tired will I be",
+            "How tired will I be if I get {NumberOfHours} hours of sleep",
+            "How tired will I be if I sleep for {NumberOfHours} hours",
+            "How tired will I be after {NumberOfHours} hours",
+            "Will I be rested sleeping for {NumberOfHours} hours",
+            "Will I be rested if I rest for {NumberOfHours} hours",
+            "Will I be tired sleeping for {NumberOfHours} hours",
+            "I will sleep for {NumberOfHours} hours",
+            "{NumberOfHours} hours of sleep"
           ]
         }
       ]
