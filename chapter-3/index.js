@@ -1,4 +1,4 @@
-const Alexa = require("ask-sdk");
+const Alexa = require("ask-sdk-core");
 
 function pluck (arr) {
   const randIndex = Math.floor(Math.random() * arr.length);
@@ -94,6 +94,6 @@ const WellRestedIntentHandler = {
   }
 };
 
-exports.handler = Alexa.SkillBuilders.standard()
+exports.handler = Alexa.SkillBuilders.custom()
                     .addRequestHandlers(WellRestedIntentHandler)
                     .lambda();
