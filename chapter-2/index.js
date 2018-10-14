@@ -1,9 +1,9 @@
 const Alexa = require("ask-sdk");
- 
+
 const WellRestedIntentHandler = {
   canHandle(handlerInput) {
     const intentName = "WellRestedIntent";
- 
+
     return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
            handlerInput.requestEnvelope.request.intent.name === intentName;
   },
@@ -15,10 +15,26 @@ const WellRestedIntentHandler = {
                       .slots;
 
     const numOfHours = slots.NumberOfHours.value;
-    const adjustedHours = parseInt(numOfHours);
+    let adjustedHours = parseInt(numOfHours);
+
+    const quality = slots.SleepQuality && slots.SleepQuality.value;
+
+    const good = ["good", "well", "wonderfully", "a lot", "amazing",
+                  "fantastic", "great", "not bad"];
+    const bad = ["bad", "poorly", "little", "very little", "not at all"];
 
     if (Number.isInteger(adjustedHours)) {
       let speech = "";
+
+      if(good.includes(quality)) {
+        adjustedHours += 1;
+        speech = "You slept well last night, and ";
+      }
+
+      if(bad.includes(quality)) {
+        adjustedHours -= 1;
+        speech = "You slept poorly last night, and ";
+      }
 
       if(adjustedHours > 12) {
         speech = "I think you may sleep too much and swing back to tired.";
