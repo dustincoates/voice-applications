@@ -1,5 +1,9 @@
 const Alexa = require("ask-sdk");
 
+const states = {
+  TOO_MUCH_CONFIRMATION: "TOO_MUCH_CONFIRMATION"
+};
+
 function pluck (arr) {
   const randIndex = Math.floor(Math.random() * arr.length);
   return arr[randIndex];
