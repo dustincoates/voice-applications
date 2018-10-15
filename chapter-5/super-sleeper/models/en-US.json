@@ -1,0 +1,103 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "super sleeper",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "WellRestedIntent",
+          "slots": [
+            {
+              "name": "NumberOfHours",
+              "type": "AMAZON.NUMBER"
+            },
+            {
+              "name": "SleepQuality",
+              "type": "Quality"
+            }
+          ],
+          "samples": [
+            "How rested will I be",
+            "How rested will I be if I get {NumberOfHours} hours of sleep",
+            "How rested will I be if I get {NumberOfHours} hours of rest",
+            "How rested will I be if I sleep for {NumberOfHours} hours",
+            "How rested will I be if I rest for {NumberOfHours} hours",
+            "How well rested will I be after {NumberOfHours} hours",
+            "How well rested will I be after {NumberOfHours} hours if I slept {SleepQuality} last night",
+            "How well rested will I be if I slept {SleepQuality} last night",
+            "How well rested will I be if I slept {SleepQuality} last night and I get {NumberOfHours} of sleep tonight",
+            "How tired will I be",
+            "How tired will I be if I get {NumberOfHours} hours of sleep",
+            "How tired will I be if I get {NumberOfHours} hours of sleep and I slept {SleepQuality} last night",
+            "How tired will I be if I get {NumberOfHours} hours of sleep and I got {SleepQuality} sleep last night",
+            "How tired will I be if I get {NumberOfHours} hours of rest",
+            "How tired will I be if I get {NumberOfHours} hours of rest and I slept {SleepQuality} last night",
+            "How tired will I be if I get {NumberOfHours} hours of rest and I got {SleepQuality} sleep last night",
+            "How tired will I be if I sleep for {NumberOfHours} hours",
+            "How tired will I be if I sleep for {NumberOfHours} hours tonight",
+            "How tired will I be if I rest for {NumberOfHours} hours tonight",
+            "How tired will I be after {NumberOfHours} hours",
+            "Will I be rested sleeping for {NumberOfHours} hours",
+            "Will I be rested sleeping for {NumberOfHours} hours after a night of {SleepQuality} sleep",
+            "Will I be rested if I sleep for {NumberOfHours} hours",
+            "Will I be rested if I sleep for {NumberOfHours} hours if I slept {SleepQuality} yesterday",
+            "Will I be rested if I sleep for {NumberOfHours} hours if I slept {SleepQuality} last night",
+            "Will I be rested if I rest for {NumberOfHours} hours",
+            "Will I be tired sleeping for {NumberOfHours} hours",
+            "Will I be tired sleeping for {NumberOfHours} hours tonight",
+            "Will I be tired if I sleep for {NumberOfHours} hours",
+            "I will sleep for {NumberOfHours} hours",
+            "I will sleep for {NumberOfHours} hours tonight",
+            "I will sleep for {NumberOfHours} hours and I got {SleepQuality} sleep last night",
+            "I will sleep for {NumberOfHours} hours and I slept {SleepQuality} last night",
+            "{NumberOfHours} hours of sleep",
+            "{NumberOfHours} hours of sleep and {SleepQuality} sleep last night",
+            "{NumberOfHours} hours {SleepQuality} last night",
+            "{NumberOfHours} hours tonight {SleepQuality} last night",
+            "{NumberOfHours} hours tonight {SleepQuality} sleep last night"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "name": "Quality",
+          "values": [
+            {
+              "id": "good",
+              "name": {
+                "value": "good",
+                "synonyms": [
+                  "well",
+                  "wonderfully",
+                  "a lot",
+                  "amazing",
+                  "fantastic",
+                  "great",
+                  "not bad"
+                ]
+              }
+            },
+            {
+              "id": "bad",
+              "name": {
+                "value": "bad",
+                "synonyms": ["poorly", "little", "very little", "not at all"]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
