@@ -71,8 +71,19 @@ const WellRestedIntentHandler = {
         }
       }
 
-      if(adjustedHours > 12) {
-        speech += pluck(WellRestedPhrases.tooMuch);
+      if (adjustedHours > 12) {
+        attributes.state = states.TOO_MUCH_CONFIRMATION;
+        handlerInput.attributesManager.setSessionAttributes(attributes);
+
+        const speech = "I want to make sure I got that. " +
+                       "Do you really plan to sleep " +
+                       numOfHours + " hours?";
+        const reprompt = numOfHours + " hours? Did I hear right?";
+
+        return handlerInput.responseBuilder
+                .speak(speech)
+                .reprompt(reprompt)
+                .getResponse();
       } else if(adjustedHours > 8) {
         speech += pluck(WellRestedPhrases.justRight);
       } else if(adjustedHours > 6) {
