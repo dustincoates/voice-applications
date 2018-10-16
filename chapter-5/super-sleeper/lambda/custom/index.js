@@ -54,9 +54,9 @@ const WellRestedIntentHandler = {
       const attributes = handlerInput.attributesManager.getSessionAttributes();
 
       const resolutionValues = slots.SleepQuality &&
-        slots.SleepQuality.resolutions &&
-        slots.SleepQuality.resolutions.resolutionsPerAuthority[0] &&
-        slots.SleepQuality.resolutions.resolutionsPerAuthority[0].values;
+      slots.SleepQuality.resolutions &&
+      slots.SleepQuality.resolutions.resolutionsPerAuthority[0] &&
+      slots.SleepQuality.resolutions.resolutionsPerAuthority[0].values;
 
       if (resolutionValues) {
         const quality = resolutionValues[0].value.id;
@@ -77,14 +77,14 @@ const WellRestedIntentHandler = {
         handlerInput.attributesManager.setSessionAttributes(attributes);
 
         const speech = "I want to make sure I got that. " +
-                       "Do you really plan to sleep " +
-                       numOfHours + " hours?";
+        "Do you really plan to sleep " +
+        numOfHours + " hours?";
         const reprompt = numOfHours + " hours? Did I hear right?";
 
         return handlerInput.responseBuilder
-                .speak(speech)
-                .reprompt(reprompt)
-                .getResponse();
+        .speak(speech)
+        .reprompt(reprompt)
+        .getResponse();
       } else if(adjustedHours > 8) {
         speech += pluck(WellRestedPhrases.justRight);
       } else if(adjustedHours > 6) {
@@ -92,6 +92,9 @@ const WellRestedIntentHandler = {
       } else {
         speech += pluck(WellRestedPhrases.tooLittle);
       }
+
+      delete attributes.state;
+      handlerInput.attributesManager.setSessionAttributes(attributes);
 
       return handlerInput
               .responseBuilder
