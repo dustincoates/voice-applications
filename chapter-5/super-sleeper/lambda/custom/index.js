@@ -196,12 +196,31 @@ const TooMuchNoIntentHandler = {
   }
 };
 
+
+const Unhandled = {
+  canHandle(handlerInput) {
+    return true;
+  },
+  handle(handlerInput) {
+    const speech = "Hey, sorry, I'm not sure how to take care of that. " +
+                   "Try once more?";
+    const reprompt = "How about this. Tell me instead how many hours " +
+                     "you want to sleep.";
+
+    return handlerInput.responseBuilder
+      .speak(speech)
+      .reprompt(reprompt)
+      .getResponse();
+  },
+};
+
 exports.handler = Alexa.SkillBuilders.standard()
                     .addRequestHandlers(
                       TooMuchYesIntentHandler,
                       TooMuchNoIntentHandler,
                       WellRestedIntentHandler,
                       StopOrCancelIntentHandler,
-                      LaunchRequestHandler
+                      LaunchRequestHandler,
+                      Unhandled
                     )
                     .lambda();
