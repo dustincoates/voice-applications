@@ -21,15 +21,48 @@
           "slots": [
             {
               "name": "MovieName",
-              "type": "AMAZON.Movie"
+              "type": "AMAZON.Movie",
+              "samples": [
+                "{TicketsNumber} for {MovieName} at {MovieTime}",
+                "{TicketsNumber} for {MovieName}",
+                "for {TicketsNumber} for {MovieName}",
+                "the {MovieTime} showing of {MovieName}",
+                "{MovieName} at {MovieTime}",
+                "{TicketsNumber} tickets to {MovieName}",
+                "I'm going to watch {MovieName}",
+                "I'll see {MovieName}",
+                "I want to see {MovieName}",
+                "{MovieName}"
+              ]
             },
             {
               "name": "MovieTheater",
-              "type": "AMAZON.MovieTheater"
+              "type": "AMAZON.MovieTheater",
+              "samples": [
+                "I'll be going to {MovieTheater}",
+                "I'm seeing it at {MovieTheater}",
+                "{MovieTheater} for the {MovieTime} showing",
+                "{MovieTheater} at {MovieTime}",
+                "{MovieTheater} for {TicketsNumber} person",
+                "{MovieTheater} for {TicketsNumber} people",
+                "{MovieTheater} for {TicketsNumber} at {MovieTime}",
+                "I want to go to {MovieTheater}",
+                "{MovieTheater}"
+              ]
             },
             {
               "name": "MovieTime",
-              "type": "AMAZON.TIME"
+              "type": "AMAZON.TIME",
+              "samples": [
+                "the showing at {MovieTime}",
+                "the screening at {MovieTime}",
+                "the {MovieTime} showing",
+                "the {MovieTime} screening",
+                "I'll see it at {MovieTime}",
+                "I'll see it at the {MovieTime} showing",
+                "I'll see it at the {MovieTime} screening",
+                "{MovieTime}"
+              ]
             },
             {
               "name": "TicketsNumber",
@@ -38,6 +71,7 @@
           ],
           "samples": [
             "buy {TicketsNumber} tickets for {MovieName} at {MovieTime}",
+            "buy {TicketsNumber} tickets for {MovieName}",
             "{MovieName} for {TicketsNumber}",
             "buy tickets for {MovieName}",
             "buy tickets for the movie {MovieName}",
@@ -63,6 +97,122 @@
           ]
         }
       ]
-    }
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "BuyTicketsIntent",
+          "confirmationRequired": true,
+          "prompts": {
+            "confirmation": "Confirm.Intent.BuyTicketsIntent"
+          },
+          "slots": [
+            {
+              "name": "MovieName",
+              "type": "AMAZON.Movie",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Slot.BuyTicketsIntent.IntentSlot-MovieName"
+              }
+            },
+            {
+              "name": "MovieTheater",
+              "type": "AMAZON.MovieTheater",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Slot.BuyTicketsIntent.IntentSlot-MovieTheater"
+              }
+            },
+            {
+              "name": "MovieTime",
+              "type": "AMAZON.TIME",
+              "confirmationRequired": true,
+              "elicitationRequired": true,
+              "prompts": {
+                "confirmation": "Confirm.Slot.BuyTicketsIntent.IntentSlot-MovieTime",
+                "elicitation": "Elicit.Slot.BuyTicketsIntent.IntentSlot-MovieTime"
+              }
+            },
+            {
+              "name": "TicketsNumber",
+              "type": "AMAZON.NUMBER"
+            }
+          ]
+        }
+      ]
+    },
+    "prompts": [
+      {
+        "id": "Elicit.Slot.BuyTicketsIntent.IntentSlot-MovieName",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "What movie do you have your eye on?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Okay, which movie will you be watching?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Great, what movie do you want to see?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.BuyTicketsIntent.IntentSlot-MovieTheater",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "You wanna see {MovieName}, got it. Which theater?"
+          },
+          {
+            "type": "PlainText",
+            "value": "You wanna see {MovieName}? I've heard good things. Which theater?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Where do you wanna see {MovieName}?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.BuyTicketsIntent.IntentSlot-MovieTime",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "And what showing do you want?"
+          },
+          {
+            "type": "PlainText",
+            "value": "And which showing?"
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Slot.BuyTicketsIntent.IntentSlot-MovieTime",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Did I hear you right, that was the {MovieTime} showing?"
+          },
+          {
+            "type": "PlainText",
+            "value": "I got the {MovieTime} showing, is that right?"
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Intent.BuyTicketsIntent",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Okay. So, {TicketsNumber} for {MovieName} at {MovieTheater}, for the {MovieTime} showing. If that all sounds good, I'll charge your credit card. Do you want to continue?"
+          }
+        ]
+      }
+    ]
   }
 }
