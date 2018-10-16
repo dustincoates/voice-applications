@@ -75,6 +75,44 @@
             "{NumberOfHours} hours tonight {SleepQuality} last night",
             "{NumberOfHours} hours tonight {SleepQuality} sleep last night"
           ]
+        },
+        {
+          "name": "GoingToBedIntent",
+          "slots": [],
+          "samples": [
+            "I'm going to bed",
+            "I'm headed to bed",
+            "I'm off to bed",
+            "Time for bed",
+            "I'm going to sleep",
+            "I'm headed to sleep",
+            "I'm off to sleep",
+            "Time for sleep",
+            "Time to sleep",
+            "Goodnight",
+            "Taking a nap",
+            "Laying down to sleep"
+          ]
+        },
+        {
+          "name": "WakingUpIntent",
+          "slots": [],
+          "samples": [
+            "I'm up",
+            "I'm awake",
+            "I'm done sleeping",
+            "I've gotten up",
+            "I got up",
+            "I'm out of bed",
+            "How much I slept",
+            "How long I slept",
+            "How long I was sleeping",
+            "How long I was out for last night",
+            "How long my nap was",
+            "How long my sleep was",
+            "For the mount of sleep",
+            "I've woken up"
+          ]
         }
       ],
       "types": [
