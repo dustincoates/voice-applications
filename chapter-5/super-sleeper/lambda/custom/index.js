@@ -51,6 +51,7 @@ const WellRestedIntentHandler = {
 
     if (Number.isInteger(adjustedHours)) {
       let speech = "";
+      const attributes = handlerInput.attributesManager.getSessionAttributes();
 
       const resolutionValues = slots.SleepQuality &&
         slots.SleepQuality.resolutions &&
@@ -146,8 +147,31 @@ const LaunchRequestHandler = {
   }
 };
 
+const TooMuchYesIntentHandler = {
+  canHandle(handlerInput) {
+    const intentName = "AMAZON.YesIntent";
+    const attributes = handlerInput.attributesManager.getSessionAttributes();
+
+    return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+      handlerInput.requestEnvelope.request.intent.name === intentName &&
+      attributes.state === states.TOO_MUCH_CONFIRMATION;
+  },
+  handle(handlerInput) {
+    const speech = "Okay, " + pluck(WellRestedPhrases.tooMuch);
+
+    const attributes = handlerInput.attributesManager.getSessionAttributes();
+    delete attributes.state;
+    handlerInput.attributesManager.setSessionAttributes(attributes);
+
+    return handlerInput.responseBuilder
+      .speak(speech)
+      .getResponse();
+  }
+};
+
 exports.handler = Alexa.SkillBuilders.standard()
                     .addRequestHandlers(
+                      TooMuchYesIntentHandler,
                       WellRestedIntentHandler,
                       StopOrCancelIntentHandler,
                       LaunchRequestHandler
