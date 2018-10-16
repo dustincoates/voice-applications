@@ -254,6 +254,43 @@ const GoingToBedIntentHandler = {
   }
 };
 
+const WakingUpIntentHandler = {
+  canHandle(handlerInput) {
+    const intentName = "WakingUpIntent";
+
+    return handlerInput.requestEnvelope.request.type === "IntentRequest"
+    && handlerInput.requestEnvelope.request.intent.name === intentName;
+  },
+  async handle(handlerInput) {
+    const data = await handlerInput
+                        .attributesManager
+                        .getPersistentAttributes();
+    const attributes = handlerInput.attributesManager.getSessionAttributes();
+
+    if (data.sleepStart) {
+      attributes.state = states.WAKING;
+      data.timesRisen = this.attributes.timesRisen + 1;
+
+      const speech = "Are you up for good?";
+      const reprompt = "Should I stop the sleep timer?";
+
+      handlerInput.attributesManager.setSessionAttributes(attributes);
+
+      handlerInput.attributesManager.setPersistentAttributes(data);
+      await handlerInput.attributesManager.savePersistentAttributes(data);
+
+      return handlerInput.responseBuilder
+        .speak(speech)
+        .reprompt(reprompt)
+        .getResponse();
+    } else {
+      const speech = "Oops, by my measure you were already awake.";
+
+      return handlerInput.responseBuilder.speak(speech).getResponse();
+    }
+  }
+};
+
 const Unhandled = {
   canHandle(handlerInput) {
     return true;
@@ -277,6 +314,7 @@ exports.handler = Alexa.SkillBuilders.standard()
                       TooMuchNoIntentHandler,
                       WellRestedIntentHandler,
                       GoingToBedIntentHandler,
+                      WakingUpIntentHandler,
                       StopOrCancelIntentHandler,
                       LaunchRequestHandler,
                       Unhandled
