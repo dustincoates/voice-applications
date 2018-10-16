@@ -2,7 +2,8 @@ const Alexa = require("ask-sdk");
 const AWS = require("aws-sdk");
 
 const states = {
-  TOO_MUCH_CONFIRMATION: "TOO_MUCH_CONFIRMATION"
+  TOO_MUCH_CONFIRMATION: "TOO_MUCH_CONFIRMATION",
+  WAKING: "WAKING"
 };
 
 function pluck (arr) {
@@ -227,6 +228,31 @@ const TooMuchNoIntentHandler = {
   }
 };
 
+const GoingToBedIntentHandler = {
+  canHandle(handlerInput) {
+    const intentName = "GoingToBedIntent";
+
+    return handlerInput.requestEnvelope.request.type === "IntentRequest"
+    && handlerInput.requestEnvelope.request.intent.name === intentName;
+  },
+  async handle(handlerInput) {
+    const data = await handlerInput
+                        .attributesManager
+                        .getPersistentAttributes();
+
+    data.sleepStart = (new Date()).toString();
+    data.timesRisen = 0;
+
+    handlerInput.attributesManager.setPersistentAttributes(data);
+    await handlerInput.attributesManager.savePersistentAttributes(data);
+
+    const speech = "Sleep well and let me know when you're awake.";
+
+    return handlerInput.responseBuilder
+      .speak(speech)
+      .getResponse();
+  }
+};
 
 const Unhandled = {
   canHandle(handlerInput) {
@@ -250,6 +276,7 @@ exports.handler = Alexa.SkillBuilders.standard()
                       TooMuchYesIntentHandler,
                       TooMuchNoIntentHandler,
                       WellRestedIntentHandler,
+                      GoingToBedIntentHandler,
                       StopOrCancelIntentHandler,
                       LaunchRequestHandler,
                       Unhandled
