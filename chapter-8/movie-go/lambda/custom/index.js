@@ -1,104 +1,122 @@
-/* eslint-disable  func-names */
-/* eslint-disable  no-console */
+const Alexa = require("ask-sdk-core");
 
-const Alexa = require('ask-sdk-core');
-
-const LaunchRequestHandler = {
+const BuyTicketsIntentHandler = {
   canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
+    const intentName = "BuyTicketsIntent";
+
+    return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+      handlerInput.requestEnvelope.request.intent.name === intentName;
   },
   handle(handlerInput) {
-    const speechText = 'Welcome to the Alexa Skills Kit, you can say hello!';
+    const dialogComplete = "COMPLETED";
+    const dialogStarted = "STARTED";
+    const intent = handlerInput.requestEnvelope.request.intent;
+    const ticketPrice = 10;
 
-    return handlerInput.responseBuilder
-      .speak(speechText)
-      .reprompt(speechText)
-      .withSimpleCard('Hello World', speechText)
-      .getResponse();
-  },
-};
+    if (handlerInput.requestEnvelope.request.dialogState !== dialogComplete) {
+      if (handlerInput.requestEnvelope.request.dialogState === dialogStarted) {
+        intent.slots.TicketsNumber.value = intent.slots.TicketsNumber.value || 1;
+      }
 
-const HelloWorldIntentHandler = {
-  canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-      && handlerInput.requestEnvelope.request.intent.name === 'HelloWorldIntent';
-  },
-  handle(handlerInput) {
-    const speechText = 'Hello World!';
+      return handlerInput.responseBuilder
+        .addDelegateDirective(intent)
+        .getResponse();
+    } else {
+      const movieName = intent.slots.MovieName.value;
+      const movieTime = intent.slots.MovieTime.value;
+      let ticketsNumber = intent.slots.TicketsNumber.value;
 
-    return handlerInput.responseBuilder
-      .speak(speechText)
-      .withSimpleCard('Hello World', speechText)
-      .getResponse();
-  },
+      if (ticketsNumber) {
+        ticketsNumber = parseInt(ticketsNumber);
+      } else {
+        ticketsNumber = 1;
+      }
+
+      const price = ticketsNumber * ticketPrice;
+
+      const speech = `Alright <break strength="strong" /> ${ticketsNumber} ` +
+                     `for ${movieName}. Total cost, $${price}, and the movie ` +
+                     `starts at ${movieTime}.`;
+
+      return handlerInput.responseBuilder
+        .speak(speech)
+        .getResponse();
+    }
+  }
 };
 
 const HelpIntentHandler = {
   canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-      && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
+    const intentName = "AMAZON.HelpIntent";
+
+    return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+      handlerInput.requestEnvelope.request.intent.name === intentName;
   },
   handle(handlerInput) {
-    const speechText = 'You can say hello to me!';
+    const speech = "You can buy movie tickets by telling me which movie you wanna see.";
+    const reprompt = "How about starting with 'I want to buy tickets?'";
 
     return handlerInput.responseBuilder
-      .speak(speechText)
-      .reprompt(speechText)
-      .withSimpleCard('Hello World', speechText)
+      .speak(speech)
+      .reprompt(reprompt)
       .getResponse();
-  },
+  }
 };
 
-const CancelAndStopIntentHandler = {
+const StopOrCancelIntentHandler = {
   canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-      && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent'
-        || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
+    const stopIntentName = "AMAZON.StopIntent";
+    const cancelIntentName = "AMAZON.CancelIntent";
+
+    return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+      (handlerInput.requestEnvelope.request.intent.name === stopIntentName ||
+        handlerInput.requestEnvelope.request.intent.name === cancelIntentName);
   },
   handle(handlerInput) {
-    const speechText = 'Goodbye!';
+    const speech = "Come back! See you soon.";
+
+    return handlerInput.responseBuilder.speak(speech).getResponse();
+  }
+};
+
+const LaunchRequestHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === "LaunchRequest";
+  },
+  handle(handlerInput) {
+    const speech = "Welcome to Movie Go where you can buy tickets. Which movie do you wanna see?";
+    const reprompt = "Try saying, 'I wanna see' and then the name of a movie.";
 
     return handlerInput.responseBuilder
-      .speak(speechText)
-      .withSimpleCard('Hello World', speechText)
+      .speak(speech)
+      .reprompt(reprompt)
       .getResponse();
-  },
+  }
 };
 
-const SessionEndedRequestHandler = {
+const Unhandled = {
   canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'SessionEndedRequest';
-  },
-  handle(handlerInput) {
-    console.log(`Session ended with reason: ${handlerInput.requestEnvelope.request.reason}`);
-
-    return handlerInput.responseBuilder.getResponse();
-  },
-};
-
-const ErrorHandler = {
-  canHandle() {
     return true;
   },
-  handle(handlerInput, error) {
-    console.log(`Error handled: ${error.message}`);
+  handle(handlerInput) {
+    const speech = "Oh, I think I misunderstood. Can you try once more?";
+    const reprompt = "How about this. Say which movie you want to see.";
 
     return handlerInput.responseBuilder
-      .speak('Sorry, I can\'t understand the command. Please say again.')
-      .reprompt('Sorry, I can\'t understand the command. Please say again.')
+      .speak(speech)
+      .reprompt(reprompt)
       .getResponse();
-  },
+  }
 };
 
-const skillBuilder = Alexa.SkillBuilders.custom();
-
-exports.handler = skillBuilder
+const skillId = "<YOUR SKILL ID>";
+exports.handler = Alexa.SkillBuilders.custom()
   .addRequestHandlers(
-    LaunchRequestHandler,
-    HelloWorldIntentHandler,
+    BuyTicketsIntentHandler,
     HelpIntentHandler,
-    CancelAndStopIntentHandler,
-    SessionEndedRequestHandler
+    StopOrCancelIntentHandler,
+    LaunchRequestHandler,
+    Unhandled
   )
-  .addErrorHandlers(ErrorHandler)
+  .withSkillId(skillId)
   .lambda();
