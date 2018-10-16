@@ -1,38 +1,65 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "greeter",
-      "types": [
-
-      ],
+      "invocationName": "movie go",
+      "types": [],
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
-          "samples": [
-
-          ]
+          "samples": []
         },
         {
           "name": "AMAZON.HelpIntent",
-          "samples": [
-
-          ]
+          "samples": []
         },
         {
           "name": "AMAZON.StopIntent",
-          "samples": [
-
-          ]
+          "samples": []
         },
         {
-          "name": "HelloWorldIntent",
+          "name": "BuyTicketsIntent",
           "slots": [
-
+            {
+              "name": "MovieName",
+              "type": "AMAZON.Movie"
+            },
+            {
+              "name": "MovieTheater",
+              "type": "AMAZON.MovieTheater"
+            },
+            {
+              "name": "MovieTime",
+              "type": "AMAZON.TIME"
+            },
+            {
+              "name": "TicketsNumber",
+              "type": "AMAZON.NUMBER"
+            }
           ],
           "samples": [
-            "hello",
-            "say hello",
-            "say hello world"
+            "buy {TicketsNumber} tickets for {MovieName} at {MovieTime}",
+            "{MovieName} for {TicketsNumber}",
+            "buy tickets for {MovieName}",
+            "buy tickets for the movie {MovieName}",
+            "for tickets for the movie {MovieName}",
+            "buy tickets for the movie",
+            "buy tickets",
+            "I want {TicketsNumber} tickets",
+            "I want to buy {TicketsNumber} tickets",
+            "{TicketsNumber} tickets please",
+            "{MovieName} at {MovieTheater} theater at {MovieTime}",
+            "{MovieName} at {MovieTime}",
+            "{TicketsNumber} for {MovieName} at {MovieTime}",
+            "{TicketsNumber} tickets to see {MovieName} at {MovieTime}",
+            "I want to buy {TicketsNumber} for the {MovieTime} showing of {MovieName}",
+            "{TicketsNumber} tickets to {MovieName}",
+            "I'm going to watch {MovieName}",
+            "I'll see {MovieName}",
+            "I want to see {MovieName}",
+            "I want to see a movie",
+            "I want to see a movie at {MovieTheater}",
+            "I want to see a {MovieTime} showing",
+            "{MovieTheater} tickets"
           ]
         }
       ]
