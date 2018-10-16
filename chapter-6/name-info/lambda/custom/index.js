@@ -17,10 +17,45 @@ const LaunchRequestHandler = {
   }
 };
 
+const GetNameIntentHandler = {
+  canHandle(handlerInput) {
+    const intentName = "GetNameIntent";
+
+    return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+      handlerInput.requestEnvelope.request.intent.name === intentName;
+  },
+  async handle(handlerInput) {
+    const slots = handlerInput.requestEnvelope.request.intent.slots;
+    const name = slots.name.value;
+
+    const data = await handlerInput
+                        .attributesManager
+                        .getPersistentAttributes();
+
+    data.name = name;
+
+    if (name) {
+      handlerInput.attributesManager.setPersistentAttributes(data);
+      await handlerInput.attributesManager.savePersistentAttributes(data);
+
+      const speech = name + " sure is a nice name. " +
+                     "What do you want to know about it?";
+      const reprompt = "I could spell it for you.";
+
+      return handlerInput.responseBuilder
+        .speak(speech)
+        .getResponse();
+    } else {
+      return LaunchRequestHandler.handle(handlerInput);
+    }
+  },
+};
+
 const skillId = "<YOUR SKILL ID>";
 exports.handler = Alexa.SkillBuilders.standard()
   .addRequestHandlers(
-    LaunchRequestHandler
+    LaunchRequestHandler,
+    GetNameIntentHandler
   )
   .withSkillId(skillId)
   .withTableName("name_info")
