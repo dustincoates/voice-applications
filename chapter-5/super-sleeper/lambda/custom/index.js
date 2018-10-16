@@ -350,6 +350,23 @@ const NotWakingForGoodHandler = {
   }
 };
 
+const WakingUnhandled = {
+  canHandle (handlerInput) {
+    const attributes = handlerInput.attributesManager.getSessionAttributes();
+
+    return attributes.state === states.WAKING;
+  },
+  handle (handlerInput) {
+    const speech = "Would you like to wake up for good?";
+    const reprompt = "Are you waking up for good?";
+
+    return handlerInput.responseBuilder
+      .speak(speech)
+      .reprompt(reprompt)
+      .getResponse();
+  }
+};
+
 const Unhandled = {
   canHandle(handlerInput) {
     return true;
@@ -373,6 +390,7 @@ exports.handler = Alexa.SkillBuilders.standard()
                       TooMuchNoIntentHandler,
                       WakingForGoodHandler,
                       NotWakingForGoodHandler,
+                      WakingUnhandled,
                       WellRestedIntentHandler,
                       GoingToBedIntentHandler,
                       WakingUpIntentHandler,
