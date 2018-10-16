@@ -1,4 +1,5 @@
 const Alexa = require("ask-sdk");
+const AWS = require("aws-sdk");
 
 const states = {
   TOO_MUCH_CONFIRMATION: "TOO_MUCH_CONFIRMATION"
@@ -222,5 +223,10 @@ exports.handler = Alexa.SkillBuilders.standard()
                       StopOrCancelIntentHandler,
                       LaunchRequestHandler,
                       Unhandled
+                    )
+                    .withTableName("super_sleeper")
+                    .withAutoCreateTable(true)
+                    .withDynamoDbClient(
+                      new AWS.DynamoDB({ apiVersion: "latest", region: "us-east-1" })
                     )
                     .lambda();
