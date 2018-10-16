@@ -47,6 +47,7 @@ const BuyTicketsIntentHandler = {
   handle(handlerInput) {
     const dialogComplete = "COMPLETED";
     const dialogStarted = "STARTED";
+    const intentConfirmed = "CONFIRMED";
     const intent = handlerInput.requestEnvelope.request.intent;
     const ticketPrice = 10;
 
@@ -99,7 +100,10 @@ const BuyTicketsIntentHandler = {
       return handlerInput.responseBuilder
         .addDelegateDirective(intent)
         .getResponse();
-    } else {
+    } else if (
+      handlerInput.requestEnvelope.request.dialogState === dialogComplete &&
+      intent.confirmationStatus === intentConfirmed
+    ) {
       const movieName = intent.slots.MovieName.value;
       const movieTime = intent.slots.MovieTime.value;
       let ticketsNumber = intent.slots.TicketsNumber.value;
@@ -118,6 +122,14 @@ const BuyTicketsIntentHandler = {
 
       return handlerInput.responseBuilder
         .speak(speech)
+        .getResponse();
+    } else {
+      const speech = "Sorry, can we try again? What movie do you wanna see?";
+      const reprompt = "Tell me which movie you want to see.";
+
+      return handlerInput.responseBuilder
+        .speak(speech)
+        .reprompt(reprompt)
         .getResponse();
     }
   }
