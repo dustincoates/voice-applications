@@ -330,6 +330,26 @@ const WakingForGoodHandler = {
   }
 };
 
+const NotWakingForGoodHandler = {
+  canHandle (handlerInput) {
+    const noIntentName = "AMAZON.NoIntent";
+    const cancelIntentName = "AMAZON.CancelIntent";
+    const attributes = handlerInput.attributesManager.getSessionAttributes();
+
+    return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+      (handlerInput.requestEnvelope.request.intent.name === noIntentName ||
+      handlerInput.requestEnvelope.request.intent.name === cancelIntentName) &&
+      attributes.state === states.WAKING;
+  },
+  async handle (handlerInput) {
+    let speech = `Alright, sleep well and we'll talk in the morning.`;
+
+    return handlerInput.responseBuilder
+      .speak(speech)
+      .getResponse();
+  }
+};
+
 const Unhandled = {
   canHandle(handlerInput) {
     return true;
@@ -352,6 +372,7 @@ exports.handler = Alexa.SkillBuilders.standard()
                       TooMuchYesIntentHandler,
                       TooMuchNoIntentHandler,
                       WakingForGoodHandler,
+                      NotWakingForGoodHandler,
                       WellRestedIntentHandler,
                       GoingToBedIntentHandler,
                       WakingUpIntentHandler,
