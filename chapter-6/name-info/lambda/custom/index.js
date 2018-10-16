@@ -1,6 +1,16 @@
 const Alexa = require("ask-sdk");
 const AWS = require("aws-sdk");
 
+const SavePersistenceInterceptor = {
+  async process(handlerInput, response) {
+    try {
+      await handlerInput.attributesManager.savePersistentAttributes();
+    } catch (error) {
+      throw Error(error);
+    }
+  }
+};
+
 const LaunchRequestHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === "LaunchRequest";
@@ -68,7 +78,6 @@ const SpellingIntentHandler = {
 
     if(data.name) {
       handlerInput.attributesManager.setPersistentAttributes(data);
-      await handlerInput.attributesManager.savePersistentAttributes(data);
 
       const speech = `You spell ${name}, ${name.split("").join(" ")}.`;
 
@@ -89,6 +98,7 @@ exports.handler = Alexa.SkillBuilders.standard()
     SpellingIntentHandler
   )
   .withSkillId(skillId)
+  .addResponseInterceptors(SavePersistenceInterceptor)
   .withTableName("name_info")
   .withAutoCreateTable(true)
   .withDynamoDbClient(
