@@ -29,6 +29,14 @@ function friendlyTime (timeStr) {
   return friendlyStr;
 }
 
+const nowPlaying = {
+  "river oaks": {
+    "red river": ["12:15", "15:30", "18:05"],
+    "wizard of oz": ["09:30"],
+    "the godfather": ["20:45"]
+  }
+};
+
 const BuyTicketsIntentHandler = {
   canHandle(handlerInput) {
     const intentName = "BuyTicketsIntent";
@@ -55,6 +63,37 @@ const BuyTicketsIntentHandler = {
         movieTime = friendlyTime(intent.slots.MovieTime.value);
 
         intent.slots.MovieTime.value = movieTime;
+      }
+
+      if (
+        !intent.slots.MovieTime.value &&
+        intent.slots.MovieName.value &&
+        intent.slots.MovieTheater.value
+      ) {
+        const movieName = intent.slots.MovieName.value;
+        const movieTheater = intent.slots.MovieTheater.value;
+
+        if (nowPlaying[movieTheater][movieName]) {
+          const movieTimes = nowPlaying[movieTheater][movieName];
+          let prompt = `${intent.slots.MovieName.value} is playing at `;
+
+          movieTimes.forEach((time, index) => {
+            prompt += friendlyTime(time) + ", ";
+            if (movieTimes.length - 2 === index) {
+              prompt += "and ";
+            }
+          });
+
+          prompt += "which showing do you want?";
+
+          const reprompt = "When do you wanna see the movie?";
+
+          return handlerInput.responseBuilder
+            .speak(prompt)
+            .reprompt(reprompt)
+            .addElicitSlotDirective(intent.slots.MovieTime.name)
+            .getResponse();
+        }
       }
 
       return handlerInput.responseBuilder
