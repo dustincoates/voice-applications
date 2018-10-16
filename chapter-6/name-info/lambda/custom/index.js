@@ -51,11 +51,42 @@ const GetNameIntentHandler = {
   },
 };
 
+const SpellingIntentHandler = {
+  canHandle(handlerInput) {
+    const intentName = "SpellingIntent";
+
+    return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+      handlerInput.requestEnvelope.request.intent.name === intentName;
+  },
+  async handle(handlerInput) {
+    const slots = handlerInput.requestEnvelope.request.intent.slots;
+    const name = slots.name.value;
+
+    const data = await handlerInput
+                        .attributesManager
+                        .getPersistentAttributes();
+
+    if(data.name) {
+      handlerInput.attributesManager.setPersistentAttributes(data);
+      await handlerInput.attributesManager.savePersistentAttributes(data);
+
+      const speech = `You spell ${name}, ${name.split("").join(" ")}.`;
+
+      return handlerInput.responseBuilder
+        .speak(speech)
+        .getResponse();
+    } else {
+      return LaunchRequestHandler.handle(handlerInput);
+    }
+  },
+};
+
 const skillId = "<YOUR SKILL ID>";
 exports.handler = Alexa.SkillBuilders.standard()
   .addRequestHandlers(
     LaunchRequestHandler,
-    GetNameIntentHandler
+    GetNameIntentHandler,
+    SpellingIntentHandler
   )
   .withSkillId(skillId)
   .withTableName("name_info")
