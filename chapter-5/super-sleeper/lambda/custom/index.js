@@ -40,12 +40,25 @@ const WellRestedIntentHandler = {
     return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
            handlerInput.requestEnvelope.request.intent.name === intentName;
   },
-  handle(handlerInput) {
+  async handle(handlerInput) {
     const slots = handlerInput
                     .requestEnvelope
                     .request
                     .intent
                     .slots;
+    const data = await handlerInput
+                    .attributesManager
+                    .getPersistentAttributes();
+
+    if (data.wellRested) {
+      data.wellRested.invocations = data.wellRested.invocations + 1;
+    } else {
+      data.wellRested = {
+        invocations: 1,
+        sleepQuality: false,
+        seenHint: false
+      };
+    }
 
     const numOfHours = slots.NumberOfHours.value;
     let adjustedHours = parseInt(numOfHours);
@@ -61,6 +74,7 @@ const WellRestedIntentHandler = {
 
       if (resolutionValues) {
         const quality = resolutionValues[0].value.id;
+        data.wellRested.sleepQuality = true;
 
         if (quality === "good") {
           adjustedHours += 1;
@@ -72,6 +86,9 @@ const WellRestedIntentHandler = {
           speech = "You slept poorly last night, and ";
         }
       }
+
+      handlerInput.attributesManager.setPersistentAttributes(data);
+      await handlerInput.attributesManager.savePersistentAttributes(data);
 
       if (adjustedHours > 12) {
         attributes.state = states.TOO_MUCH_CONFIRMATION;
