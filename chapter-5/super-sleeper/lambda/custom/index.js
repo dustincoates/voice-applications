@@ -169,9 +169,34 @@ const TooMuchYesIntentHandler = {
   }
 };
 
+const TooMuchNoIntentHandler = {
+  canHandle(handlerInput) {
+    const intentName = "AMAZON.NoIntent";
+    const attributes = handlerInput.attributesManager.getSessionAttributes();
+
+    return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+      handlerInput.requestEnvelope.request.intent.name === intentName &&
+      attributes.state === states.TOO_MUCH_CONFIRMATION;
+  },
+  handle(handlerInput) {
+    const speech = "Oh, sorry. How many hours of sleep did you want?";
+    const reprompt = "Once more, how many hours?";
+
+    const attributes = handlerInput.attributesManager.getSessionAttributes();
+    delete attributes.state;
+    handlerInput.attributesManager.setSessionAttributes(attributes);
+
+    return handlerInput.responseBuilder
+      .speak(speech)
+      .reprompt(reprompt)
+      .getResponse();
+  }
+};
+
 exports.handler = Alexa.SkillBuilders.standard()
                     .addRequestHandlers(
                       TooMuchYesIntentHandler,
+                      TooMuchNoIntentHandler,
                       WellRestedIntentHandler,
                       StopOrCancelIntentHandler,
                       LaunchRequestHandler
