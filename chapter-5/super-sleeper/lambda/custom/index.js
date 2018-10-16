@@ -291,6 +291,45 @@ const WakingUpIntentHandler = {
   }
 };
 
+const WakingForGoodHandler = {
+  canHandle (handlerInput) {
+    const yesIntentName = "AMAZON.YesIntent";
+    const stopIntentName = "AMAZON.StopIntent";
+    const attributes = handlerInput.attributesManager.getSessionAttributes();
+
+    return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+      (handlerInput.requestEnvelope.request.intent.name === yesIntentName ||
+      handlerInput.requestEnvelope.request.intent.name === stopIntentName) &&
+      attributes.state === states.WAKING;
+  },
+  async handle (handlerInput) {
+    const data = await handlerInput
+                        .attributesManager
+                        .getPersistentAttributes();
+    const attributes = handlerInput.attributesManager.getSessionAttributes();
+
+    const current = new Date();
+    const past = new Date(data.sleepStart);
+    const diff = Math.abs(current.getTime() - past.getTime()) / (1000 * 60 * 60);
+    const hours = Math.floor(diff);
+    const minutes = Math.round(60 * (diff - hours));
+    const timesRisen = data.timesRisen;
+
+    let speech = `You slept ${hours} hours and ${minutes} minutes.`;
+
+    if(timesRisen > 1) {
+      speech += ` You woke up ${timesRisen} times.`;
+    }
+
+    delete attributes.state;
+    handlerInput.attributesManager.setSessionAttributes(attributes);
+
+    return handlerInput.responseBuilder
+      .speak(speech)
+      .getResponse();
+  }
+};
+
 const Unhandled = {
   canHandle(handlerInput) {
     return true;
@@ -312,6 +351,7 @@ exports.handler = Alexa.SkillBuilders.standard()
                     .addRequestHandlers(
                       TooMuchYesIntentHandler,
                       TooMuchNoIntentHandler,
+                      WakingForGoodHandler,
                       WellRestedIntentHandler,
                       GoingToBedIntentHandler,
                       WakingUpIntentHandler,
