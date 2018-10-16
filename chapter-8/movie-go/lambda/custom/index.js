@@ -1,5 +1,34 @@
 const Alexa = require("ask-sdk-core");
 
+function friendlyTime (timeStr) {
+  let [hours, minutes] = timeStr.split(":");
+  let meridian;
+  let friendlyStr;
+
+  hours = parseInt(hours);
+
+  if (hours >= 12) {
+    hours = hours - 12;
+    meridian = "p.m.";
+  } else {
+    meridian = "a.m.";
+  }
+
+  if (hours === 0) {
+    hours = 12;
+  }
+
+  if (minutes === "15") {
+    friendlyStr = `a quarter after ${hours} ${meridian}`;
+  } else if (minutes === "00" || !minutes) {
+    friendlyStr = `${hours} ${meridian}`;
+  } else {
+    friendlyStr = `${hours}:${minutes} ${meridian}`;
+  }
+
+  return friendlyStr;
+}
+
 const BuyTicketsIntentHandler = {
   canHandle(handlerInput) {
     const intentName = "BuyTicketsIntent";
@@ -16,6 +45,16 @@ const BuyTicketsIntentHandler = {
     if (handlerInput.requestEnvelope.request.dialogState !== dialogComplete) {
       if (handlerInput.requestEnvelope.request.dialogState === dialogStarted) {
         intent.slots.TicketsNumber.value = intent.slots.TicketsNumber.value || 1;
+      }
+
+      if (
+        intent.slots.MovieTime.value &&
+        intent.slots.MovieTime.confirmationStatus !== "CONFIRMED"
+      ) {
+        let movieTime = intent.slots.MovieTime.value;
+        movieTime = friendlyTime(intent.slots.MovieTime.value);
+
+        intent.slots.MovieTime.value = movieTime;
       }
 
       return handlerInput.responseBuilder
