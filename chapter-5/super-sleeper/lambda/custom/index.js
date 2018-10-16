@@ -87,6 +87,19 @@ const WellRestedIntentHandler = {
         }
       }
 
+      let endSpeech = "";
+      const regularUserCount = 1;
+      if (
+        data.wellRested.invocations > regularUserCount &&
+        !data.wellRested.sleepQuality &&
+        !data.wellRested.seenHint
+      ) {
+        endSpeech = " By the way, you can also tell me how " +
+                    "you slept last night. I'll take it into account " +
+                    "with your upcoming sleep.";
+        data.wellRested.seenHint = true;
+      }
+
       handlerInput.attributesManager.setPersistentAttributes(data);
       await handlerInput.attributesManager.savePersistentAttributes(data);
 
@@ -103,12 +116,12 @@ const WellRestedIntentHandler = {
         .speak(speech)
         .reprompt(reprompt)
         .getResponse();
-      } else if(adjustedHours > 8) {
-        speech += pluck(WellRestedPhrases.justRight);
-      } else if(adjustedHours > 6) {
-        speech += pluck(WellRestedPhrases.justUnder);
+      } else if (adjustedHours > 8) {
+        speech += pluck(WellRestedPhrases.justRight) + endSpeech;
+      } else if (adjustedHours > 6) {
+        speech += pluck(WellRestedPhrases.justUnder) + endSpeech;
       } else {
-        speech += pluck(WellRestedPhrases.tooLittle);
+        speech += pluck(WellRestedPhrases.tooLittle) + endSpeech;
       }
 
       delete attributes.state;
