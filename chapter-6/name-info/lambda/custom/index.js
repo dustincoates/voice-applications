@@ -11,6 +11,25 @@ const SavePersistenceInterceptor = {
   }
 };
 
+const GetPersistenceInterceptor = {
+  async process(handlerInput) {
+    try {
+      const data = await handlerInput
+                          .attributesManager
+                          .getPersistentAttributes();
+      const attributes = handlerInput
+                          .attributesManager
+                          .getRequestAttributes();
+
+      attributes.data = data;
+
+      handlerInput.attributesManager.setRequestAttributes(attributes);
+    } catch (error) {
+      throw Error(error);
+    }
+  }
+};
+
 const LaunchRequestHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === "LaunchRequest";
@@ -38,9 +57,10 @@ const GetNameIntentHandler = {
     const slots = handlerInput.requestEnvelope.request.intent.slots;
     const name = slots.name.value;
 
-    const data = await handlerInput
+    const attributes = handlerInput
                         .attributesManager
-                        .getPersistentAttributes();
+                        .getRequestAttributes();
+    data = attributes.data;
 
     data.name = name;
 
@@ -72,9 +92,10 @@ const SpellingIntentHandler = {
     const slots = handlerInput.requestEnvelope.request.intent.slots;
     const name = slots.name.value;
 
-    const data = await handlerInput
+    const attributes = handlerInput
                         .attributesManager
-                        .getPersistentAttributes();
+                        .getRequestAttributes();
+    data = attributes.data;
 
     if(name) {
       data.name = name;
@@ -103,6 +124,7 @@ exports.handler = Alexa.SkillBuilders.standard()
   )
   .withSkillId(skillId)
   .addResponseInterceptors(SavePersistenceInterceptor)
+  .addRequestInterceptors(GetPersistenceInterceptor)
   .withTableName("name_info")
   .withAutoCreateTable(true)
   .withDynamoDbClient(
