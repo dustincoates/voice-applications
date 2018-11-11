@@ -1,4 +1,4 @@
-const {dialogflow, SimpleResponse} = require("actions-on-google");
+const {dialogflow, SimpleResponse, BasicCard} = require("actions-on-google");
 const functions = require("firebase-functions");
 
 const app = dialogflow({debug: true});
@@ -27,6 +27,17 @@ app.intent("concept_application", (conv, {concept}) => {
     speech: response,
     text: displayText
   }));
+});
+
+app.intent("get_entities", (conv) => {
+  const title = "Built-in Entities in Dialogflow";
+  const subtitle = "Common entities for quick development";
+  const text = "Some built-in (or 'system') entities include:  \n" +
+               "- Color  \n- Time  \n- Last Name  \n- First Name";
+  const card = new BasicCard({title, subtitle, text});
+
+  conv.close("Some popular system entities include color, time, and names.");
+  conv.close(card);
 });
 
 exports.app = functions.https.onRequest(app);
