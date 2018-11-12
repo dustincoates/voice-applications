@@ -1,8 +1,7 @@
 const {
   dialogflow,
   SimpleResponse,
-  BasicCard,
-  Button
+  List
 } = require("actions-on-google");
 const functions = require("firebase-functions");
 
@@ -34,19 +33,34 @@ app.intent("concept_application", (conv, {concept}) => {
   }));
 });
 
+const systemEntities = {
+  "date time": {
+    synonyms: [
+      "time and date",
+      "sis date time"
+    ],
+    title: "@sys.date-time",
+    description: "Friday at noon"
+  },
+  "last name": {
+    synonyms: [
+      "family name",
+      "sis family name"
+    ],
+    title: "@sys.last-name",
+    description: "Rodriguez, Smith, Friedman"
+  },
+  // Add more here to fill out the list
+};
+
 app.intent("get_entities", (conv) => {
-  const title = "Built-in Entities in Dialogflow";
-  const subtitle = "Common entities for quick development";
-  const text = "Some built-in (or 'system') entities include:  \n" +
-               "- Color  \n- Time  \n- Last Name  \n- First Name";
-  const button = new Button({
-    title: "See all system entities",
-    url: "https://dialogflow.com/docs/reference/system-entities"
+  const list = new List({
+    title: "System Entities",
+    items: systemEntities
   });
-  const card = new BasicCard({title, subtitle, text, buttons: button});
 
   conv.close("Some popular system entities include color, time, and names.");
-  conv.close(card);
+  conv.close(list);
 });
 
 exports.app = functions.https.onRequest(app);
