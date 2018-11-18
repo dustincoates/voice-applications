@@ -63,4 +63,19 @@ app.intent("get_entities", (conv) => {
   conv.close(list);
 });
 
+const systemEntityDescriptions = {
+  "date time": "The date time entity takes a natural language description, " +
+               "like tomorrow at 8 and returns an " +
+               "<say-as interpret-as='verbatim'>ISO " +
+               "8601</say-as> timestamp.",
+  "last name": "The last name entity matches popular last names as strings.",
+  // Add more here to fill out the list
+};
+
+app.intent("actions.intent.OPTION", (conv, params, option) => {
+  const response = systemEntityDescriptions[option];
+
+  conv.close(response);
+});
+
 exports.app = functions.https.onRequest(app);
