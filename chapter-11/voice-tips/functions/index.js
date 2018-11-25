@@ -1,7 +1,9 @@
 const {
   dialogflow,
   SimpleResponse,
-  List
+  List,
+  Suggestions,
+  LinkOutSuggestion
 } = require("actions-on-google");
 const functions = require("firebase-functions");
 
@@ -59,6 +61,11 @@ app.intent("get_entities", (conv) => {
     items: systemEntities
   });
 
+  conv.close(new Suggestions("How to add a parameter"));
+  conv.close(new LinkOutSuggestion({
+    name: "View All",
+    url: "https://dialogflow.com/docs/reference/system-entities"
+  }));
   conv.close("Some popular system entities include color, time, and names.");
   conv.close(list);
 });
