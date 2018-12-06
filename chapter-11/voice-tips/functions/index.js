@@ -61,13 +61,18 @@ app.intent("get_entities", (conv) => {
     items: systemEntities
   });
 
-  conv.close(new Suggestions("How to add a parameter"));
-  conv.close(new LinkOutSuggestion({
-    name: "View All",
-    url: "https://dialogflow.com/docs/reference/system-entities"
-  }));
-  conv.close("Some popular system entities include color, time, and names.");
-  conv.close(list);
+  if(conv.surface.capabilities.has("actions.capability.SCREEN_OUTPUT")) {
+    conv.close(new Suggestions("How to add a parameter"));
+    conv.close(new LinkOutSuggestion({
+      name: "View All",
+      url: "https://dialogflow.com/docs/reference/system-entities"
+    }));
+    conv.close(list);
+    conv.close("Some popular system entities include color, time, and names. " +
+               "You can choose one from the list on the screen to hear more.");
+  } else {
+    conv.close("Some popular system entities include color, time, and names.");
+  }
 });
 
 const systemEntityDescriptions = {
