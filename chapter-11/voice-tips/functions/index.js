@@ -3,7 +3,8 @@ const {
   SimpleResponse,
   List,
   Suggestions,
-  LinkOutSuggestion
+  LinkOutSuggestion,
+  NewSurface
 } = require("actions-on-google");
 const functions = require("firebase-functions");
 
@@ -71,7 +72,41 @@ app.intent("get_entities", (conv) => {
     conv.close("Some popular system entities include color, time, and names. " +
                "You can choose one from the list on the screen to hear more.");
   } else {
+    if (
+      conv
+        .available
+        .surfaces
+        .capabilities
+        .has("actions.capability.SCREEN_OUTPUT")
+    ) {
+      const context = "Some popular system entities include color, time, and " +
+                      "names. I can show you a list.";
+      const notification = "System Entities";
+      const capabilities = ["actions.capability.SCREEN_OUTPUT"];
+      conv.ask(new NewSurface({context, notification, capabilities}));
+    } else {
     conv.close("Some popular system entities include color, time, and names.");
+  }
+  }
+});
+
+app.intent("actions.intent.NEW_SURFACE", (conv, input, newSurface) => {
+  if (newSurface.status === "OK") {
+    const list = new List({
+      title: "System Entities",
+      items: systemEntities
+    });
+
+    conv.close(new Suggestions("How to add a parameter"));
+    conv.close(new LinkOutSuggestion({
+      name: "View All",
+      url: "https://dialogflow.com/docs/reference/system-entities"
+    }));
+    conv.close(list);
+    conv.close("Alright, here's your list of system entities. " +
+                "You can choose one on the screen to hear more.");
+  } else {
+    conv.close("All good. Let me know if you want to see a list or hear more.");
   }
 });
 
