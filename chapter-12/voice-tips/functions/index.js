@@ -27,6 +27,10 @@ app.intent("concept_application", (conv, {concept}) => {
 
   if (!concept) {
     concept = Object.keys(responses)[conv.user.storage.lastConcept];
+    if (concept === undefined) {
+      conv.user.storage.lastConcept = 0;
+      concept = Object.keys(responses)[conv.user.storage.lastConcept];
+  }
   }
 
   const response = `To add a ${concept}, ${responses[concept]}`;
