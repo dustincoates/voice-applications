@@ -47,7 +47,11 @@ app.intent("concept_application", (conv, {concept}) => {
   };
   const displayText = displayTexts[concept];
 
-  conv.close(new SimpleResponse({
+  if (!conv.user.storage.update) {
+    conv.ask(new Suggestions("Get a daily update"));
+  }
+
+  conv.ask(new SimpleResponse({
     speech: response,
     text: displayText
   }));
