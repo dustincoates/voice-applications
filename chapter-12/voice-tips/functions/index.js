@@ -4,7 +4,8 @@ const {
   List,
   Suggestions,
   LinkOutSuggestion,
-  NewSurface
+  NewSurface,
+  RegisterUpdate
 } = require("actions-on-google");
 const functions = require("firebase-functions");
 
@@ -144,6 +145,13 @@ app.intent("actions.intent.OPTION", (conv, params, option) => {
   const response = systemEntityDescriptions[option];
 
   conv.close(response);
+});
+
+app.intent("daily_registration", conv => {
+  conv.ask(new RegisterUpdate({
+    intent: "concept_application",
+    frequency: "DAILY"
+  }));
 });
 
 exports.app = functions.https.onRequest(app);
