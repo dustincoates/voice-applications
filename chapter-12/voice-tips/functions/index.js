@@ -154,4 +154,13 @@ app.intent("daily_registration", conv => {
   }));
 });
 
+app.intent("daily_registration_completion", (conv, params, registered) => {
+  if (registered && registered.status === "OK") {
+    conv.user.storage.update = true;
+    conv.close("Ok, starting tomorrow you'll get daily updates.");
+  } else {
+    conv.close("Alright, I won't be sending you updates each day after all.");
+  }
+});
+
 exports.app = functions.https.onRequest(app);
