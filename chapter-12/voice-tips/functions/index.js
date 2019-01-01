@@ -5,7 +5,8 @@ const {
   Suggestions,
   LinkOutSuggestion,
   NewSurface,
-  RegisterUpdate
+  RegisterUpdate,
+  UpdatePermission
 } = require("actions-on-google");
 const functions = require("firebase-functions");
 
@@ -31,7 +32,7 @@ app.intent("concept_application", (conv, {concept}) => {
     if (concept === undefined) {
       conv.user.storage.lastConcept = 0;
       concept = Object.keys(responses)[conv.user.storage.lastConcept];
-  }
+    }
   }
 
   const response = `To add a ${concept}, ${responses[concept]}`;
@@ -160,6 +161,23 @@ app.intent("daily_registration_completion", (conv, params, registered) => {
     conv.close("Ok, starting tomorrow you'll get daily updates.");
   } else {
     conv.close("Alright, I won't be sending you updates each day after all.");
+  }
+});
+
+app.intent("notification_registration", conv => {
+  conv.ask(new UpdatePermission({
+    intent: "concept_application"
+  }));
+});
+
+app.intent("notification_registration_completion", (conv, params, permission) => {
+  if (permission) {
+    const userID = conv.arguments.get("UPDATES_USER_ID");
+    const intentName = "concept_application";
+    // Save ID and the intent to a data store
+    conv.close("Okay, got you registered! You'll start getting notifications");
+  } else {
+    conv.close("Ahh, no worries. No notifications for you.");
   }
 });
 
