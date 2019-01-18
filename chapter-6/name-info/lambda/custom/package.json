@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ask-sdk-core": "^2.0.0",
-    "ask-sdk-model": "^1.0.0"
+    "ask-sdk": "^2.3.0",
+    "aws-sdk": "^2.390.0"
   }
 }

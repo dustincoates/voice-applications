@@ -1,0 +1,15 @@
+---
+configuration:
+    locale: en-US
+
+---
+- test: Launch request
+- LaunchRequest:
+    - prompt: The name info skill needs you to just ask for a first name.
+    - reprompt: Try saying, 'give me facts about the name Dustin.'
+
+---
+- test: Provide a name
+- "the name is Roan":
+    - prompt: Roan sure is a nice name. What do you want to know about it?
+    - reprompt: I could spell it for you.

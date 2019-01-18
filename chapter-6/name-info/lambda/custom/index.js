@@ -118,7 +118,7 @@ exports.handler = Alexa.SkillBuilders.standard()
     GetNameIntentHandler,
     SpellingIntentHandler
   )
-  .withSkillId(skillId)
+  // .withSkillId(skillId)
   .addResponseInterceptors(SavePersistenceInterceptor)
   .addRequestInterceptors(GetPersistenceInterceptor)
   .withTableName("name_info")
