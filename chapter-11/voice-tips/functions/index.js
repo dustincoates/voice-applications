@@ -4,73 +4,101 @@ const {
   List,
   Suggestions,
   LinkOutSuggestion,
-  NewSurface
+  NewSurface,
+  RegisterUpdate,
+  UpdatePermission
 } = require("actions-on-google");
 const functions = require("firebase-functions");
 
 const app = dialogflow({debug: true});
 
-app.intent("concept_application", (conv, {concept}) => {
+app.intent("office_locations", (conv, {room}) => {
+  if (!room) {
+    if (conv.user.storage.lastRoomIndex === undefined) {
+      conv.user.storage.lastRoomIndex = 0;
+    } else {
+      conv.user.storage.lastRoomIndex = conv.user.storage.lastRoomIndex + 1;
+    }
+
+    room = Object.keys(responses)[conv.user.storage.lastRoomIndex];
+  }
+
   const responses = {
-    parameter: "list out the variable pieces of information",
-    "training phrase": "think of all the ways that a user might speak to the app",
-    intents: "imagine what users might want to do in your application"
+    kitchen: "take a left and then the first right",
+    "supply closet": "go to the other side of the floor, next to the devs",
+    "meeting room": "it's just on your right"
   };
-  const response = `To add a ${concept}, ${responses[concept]}`;
+
+  if (!room) {
+    room = Object.keys(responses)[conv.user.storage.lastroom];
+    if (room === undefined) {
+      conv.user.storage.lastRoomIndex = 0;
+      room = Object.keys(responses)[conv.user.storage.lastRoomIndex];
+    }
+  }
+
+  const response = `To find the ${room}, ${responses[room]}`;
 
   const displayTexts = {
-    parameter: "A parameter is a variable piece of info that you can add by " +
-               "making a list of all the ways people might reference that thing.",
-    "training phrases": "Training phrases are the different ways people will " +
-                        "state their intent. Find a partner to role play the " +
-                        "user and the device to develop the requests.",
-    "intents": "An intent is what the user wants to do in your application. " +
-               "You don't need to support everything, but you should respond " +
-               "to likely requests."
+    kitchen: "The kitchen is to your left and then a right. " +
+               "Grab a snack or a drink, on the house.",
+    "supply closet": "For the supply closet, you'll go all the way around " +
+                        "until you reach the developers. " +
+                        "Find the cleaning supplies, paper, and paper clips.",
+    "meeting room": "Look to your right and you'll see the meeting room. " +
+               "This meeting room seats six people and you can " +
+               "book it online."
   };
-  const displayText = displayTexts[concept];
 
-  conv.close(new SimpleResponse({
-    speech: response,
-    text: displayText
-  }));
+  const displayText = displayTexts[room];
+
+  if (!conv.user.storage.update) {
+    conv.ask(new Suggestions("Get a daily update"));
+    conv.ask(new SimpleResponse({
+      speech: response,
+      text: displayText
+    }));
+  } else {
+    conv.close(new SimpleResponse({
+      speech: response,
+      text: displayText
+    }));
+  }
 });
 
-const systemEntities = {
-  "date time": {
+const upcomingEvents = {
+  "JS Ninjas": {
     synonyms: [
-      "time and date",
-      "sis date time"
+      "JavaScript ninjas",
+      "JavaScript devs"
     ],
-    title: "@sys.date-time",
+    title: "JS Ninjas Over Lunch",
     description: "Friday at noon"
   },
-  "last name": {
+  "NLP Study Group": {
     synonyms: [
-      "family name",
-      "sis family name"
+      "natural language group",
+      "NLP group"
     ],
-    title: "@sys.last-name",
-    description: "Rodriguez, Smith, Friedman"
-  },
-  // Add more here to fill out the list
+    title: "Natural Language Processing Study Group",
+    description: "Monday evening"
+  }
 };
 
-app.intent("get_entities", (conv) => {
-  const list = new List({
-    title: "System Entities",
-    items: systemEntities
-  });
-
+app.intent("get_events", (conv) => {
   if(conv.surface.capabilities.has("actions.capability.SCREEN_OUTPUT")) {
-    conv.close(new Suggestions("How to add a parameter"));
+    const list = new List({
+      title: "Upcoming Events",
+      items: upcomingEvents
+    });
+    conv.close("We have upcoming events for JavaScript and voice-first dev. " +
+               "You can choose one from the list on the screen to hear more.");
+    conv.close(new Suggestions("Get to the meeting room"));
     conv.close(new LinkOutSuggestion({
       name: "View All",
-      url: "https://dialogflow.com/docs/reference/system-entities"
+      url:  "https://www.example.com/upcoming-events"
     }));
     conv.close(list);
-    conv.close("Some popular system entities include color, time, and names. " +
-               "You can choose one from the list on the screen to hear more.");
   } else {
     if (
       conv
@@ -79,50 +107,81 @@ app.intent("get_entities", (conv) => {
         .capabilities
         .has("actions.capability.SCREEN_OUTPUT")
     ) {
-      const context = "Some popular system entities include color, time, and " +
-                      "names. I can show you a list.";
-      const notification = "System Entities";
+      const context = "We have upcoming events for JavaScript and " +
+                      "voice-first dev. I can show you a list.";
+      const notification = "Upcoming events";
       const capabilities = ["actions.capability.SCREEN_OUTPUT"];
       conv.ask(new NewSurface({context, notification, capabilities}));
     } else {
-    conv.close("Some popular system entities include color, time, and names.");
+      conv.close("We have upcoming events for JavaScript and voice-first dev.");
+    }
   }
-  }
+});
+
+const upcomingEventsSelect = {
+  "JS Ninjas": "JS Ninjas is a monthly lunch gathering of JavaScript devs " +
+               "who come together to discuss best practices.",
+  "NLP Study Group": "Come study natural language processing with some of " +
+                     "smartest people around."
+};
+
+app.intent("actions.intent.OPTION", (conv, params, option) => {
+  const response = upcomingEventsSelect[option];
+
+  conv.close(response);
 });
 
 app.intent("actions.intent.NEW_SURFACE", (conv, input, newSurface) => {
   if (newSurface.status === "OK") {
     const list = new List({
-      title: "System Entities",
-      items: systemEntities
+      title: "Upcoming Events",
+      items: upcomingEvents
     });
 
-    conv.close(new Suggestions("How to add a parameter"));
+    conv.close(new Suggestions("Get to the meeting room"));
     conv.close(new LinkOutSuggestion({
       name: "View All",
-      url: "https://dialogflow.com/docs/reference/system-entities"
+      url:  "https://www.example.com/upcoming-events"
     }));
     conv.close(list);
-    conv.close("Alright, here's your list of system entities. " +
+    conv.close("Alright, here's your list of upcoming events. " +
                 "You can choose one on the screen to hear more.");
   } else {
     conv.close("All good. Let me know if you want to see a list or hear more.");
   }
 });
 
-const systemEntityDescriptions = {
-  "date time": "The date time entity takes a natural language description, " +
-               "like tomorrow at 8 and returns an " +
-               "<say-as interpret-as='verbatim'>ISO " +
-               "8601</say-as> timestamp.",
-  "last name": "The last name entity matches popular last names as strings.",
-  // Add more here to fill out the list
-};
+app.intent("daily_registration", conv => {
+  conv.ask(new RegisterUpdate({
+    intent: "office_locations",
+    frequency: "DAILY"
+  }));
+});
 
-app.intent("actions.intent.OPTION", (conv, params, option) => {
-  const response = systemEntityDescriptions[option];
+app.intent("daily_registration_completion", (conv, params, registered) => {
+  if (registered && registered.status === "OK") {
+    conv.user.storage.update = true;
+    conv.close("Ok, starting tomorrow you'll get daily updates.");
+  } else {
+    conv.close("Alright, I won't be sending you updates each day after all.");
+  }
+});
 
-  conv.close(response);
+app.intent("notification_registration", conv => {
+  conv.ask(new UpdatePermission({
+    intent: "office_locations"
+  }));
+});
+
+app.intent("notification_registration_completion", (conv, params, permission) => {
+  if (permission) {
+    const userID = conv.arguments.get("UPDATES_USER_ID");
+    const intentName = "office_locations";
+    console.log(userID);
+    conv.close("Okay, got you registered! You'll start getting notifications");
+  } else {
+    conv.close("Ahh, no worries. No notifications for you.");
+  }
 });
 
 exports.app = functions.https.onRequest(app);
