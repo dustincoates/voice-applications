@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ask-sdk": "^2.1.0"
+    "ask-sdk-core": "^2.1.0"
   }
 }

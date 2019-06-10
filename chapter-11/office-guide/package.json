@@ -1,8 +1,11 @@
 {
-  "name": "chapter-2",
+  "name": "office-guide",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "send_push.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ask-sdk-core": "^2.1.0"
+    "googleapis": "^36.0.0",
+    "request": "^2.88.0"
   }
 }

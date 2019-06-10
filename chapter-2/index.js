@@ -1,4 +1,4 @@
-const Alexa = require("ask-sdk");
+const Alexa = require("ask-sdk-core");
 
 const WellRestedIntentHandler = {
   canHandle(handlerInput) {
@@ -66,6 +66,6 @@ const WellRestedIntentHandler = {
   }
 };
 
-exports.handler = Alexa.SkillBuilders.standard()
+exports.handler = Alexa.SkillBuilders.custom()
                     .addRequestHandlers(WellRestedIntentHandler)
                     .lambda();

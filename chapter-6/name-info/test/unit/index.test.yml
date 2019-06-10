@@ -1,6 +1,7 @@
 ---
 configuration:
     locale: en-US
+    dynamo: mock
 
 ---
 - test: Launch request

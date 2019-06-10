@@ -71,6 +71,7 @@
           ],
           "samples": [
             "buy {TicketsNumber} tickets for {MovieName} at {MovieTime}",
+            "buy {TicketsNumber} tickets for {MovieName}",
             "{MovieName} for {TicketsNumber}",
             "buy tickets for {MovieName}",
             "buy tickets for the movie {MovieName}",
@@ -133,6 +134,10 @@
                 "confirmation": "Confirm.Slot.BuyTicketsIntent.IntentSlot-MovieTime",
                 "elicitation": "Elicit.Slot.BuyTicketsIntent.IntentSlot-MovieTime"
               }
+            },
+            {
+              "name": "TicketsNumber",
+              "type": "AMAZON.NUMBER"
             }
           ]
         }
@@ -204,7 +209,7 @@
         "variations": [
           {
             "type": "PlainText",
-            "value": "Okay. So, {MovieName} at {MovieTheater}, for the {MovieTime} showing. If that all sounds good, I'll charge your credit card. Do you want to continue?"
+            "value": "Okay. So, {TicketsNumber} for {MovieName} at {MovieTheater}, for the {MovieTime} showing. If that all sounds good, I'll charge your credit card. Do you want to continue?"
           }
         ]
       }

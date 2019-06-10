@@ -97,10 +97,14 @@ const SpellingIntentHandler = {
                         .getRequestAttributes();
     data = attributes.data;
 
+    if(name) {
+      data.name = name;
+    }
+
     if(data.name) {
       handlerInput.attributesManager.setPersistentAttributes(data);
 
-      const speech = `You spell ${name}, ${name.split("").join(" ")}.`;
+      const speech = `You spell ${data.name}, ${data.name.split("").join(" ")}.`;
 
       return handlerInput.responseBuilder
         .speak(speech)

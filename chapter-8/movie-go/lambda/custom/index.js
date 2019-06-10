@@ -20,8 +20,8 @@ function friendlyTime (timeStr) {
 
   if (minutes === "15") {
     friendlyStr = `a quarter after ${hours} ${meridian}`;
-  } else if (minutes === "00") {
-    friendlyStr = `${hours}:${meridian}`;
+  } else if (minutes === "00" || !minutes) {
+    friendlyStr = `${hours} ${meridian}`;
   } else {
     friendlyStr = `${hours}:${minutes} ${meridian}`;
   }

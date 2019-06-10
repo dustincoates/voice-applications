@@ -277,7 +277,7 @@ const WakingUpIntentHandler = {
 
     if (data.sleepStart) {
       attributes.state = states.WAKING;
-      data.timesRisen = this.attributes.timesRisen + 1;
+      data.timesRisen = data.timesRisen + 1;
 
       const speech = "Are you up for good?";
       const reprompt = "Should I stop the sleep timer?";
