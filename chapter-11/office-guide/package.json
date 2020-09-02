@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "googleapis": "^36.0.0",
+    "googleapis": "^39.1.0",
     "request": "^2.88.0"
   }
 }
